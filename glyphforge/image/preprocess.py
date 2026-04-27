@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 from PIL import Image
 
-
 ASPECT_RATIOS = {
     "1:1": (1, 1),
     "4:5": (4, 5),

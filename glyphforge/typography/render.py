@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from pathlib import Path
 from time import perf_counter
 from typing import Dict, List, Tuple
 
+import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 
@@ -22,16 +22,23 @@ from glyphforge.utils.seed import normalize_seed
 @dataclass
 class RenderResult:
     image: Image.Image
+    preprocessed_preview: Image.Image
+    mask_preview: Image.Image
+    importance_preview: Image.Image
     layout: List[LayoutWord]
     layout_stats: LayoutStats
     metrics: Dict[str, float | int | str]
 
 
-def _pick_text_color(gray_value: int, theme_name: str, subject_ratio_y: float, weight: float) -> Tuple[int, int, int]:
+def _pick_text_color(
+    gray_value: int,
+    theme_name: str,
+    subject_ratio_y: float,
+    weight: float,
+) -> Tuple[int, int, int]:
     theme = get_theme(theme_name)
-    if theme_name == "sports_red_black":
-        if subject_ratio_y > 0.58 and weight > 0.4:
-            return theme.accent
+    if theme_name == "sports_red_black" and subject_ratio_y > 0.58 and weight > 0.4:
+        return theme.accent
     if theme_name == "gold_black_tribute":
         if weight > 0.72:
             return theme.accent
@@ -41,6 +48,21 @@ def _pick_text_color(gray_value: int, theme_name: str, subject_ratio_y: float, w
     if gray_value < 170:
         return theme.text_mid
     return theme.text_dark
+
+
+def _build_importance_map(gray: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """
+    Create a placement importance map from tone and local structure.
+    Higher scores indicate regions more likely to preserve portrait character.
+    """
+    darkness = (255.0 - gray.astype(np.float32)) / 255.0
+    edges = cv2.Canny(gray, threshold1=80, threshold2=160).astype(np.float32) / 255.0
+    edge_strength = cv2.GaussianBlur(edges, (0, 0), sigmaX=1.2)
+
+    importance = (0.7 * darkness) + (0.3 * edge_strength) + 0.03
+    importance = cv2.GaussianBlur(importance, (0, 0), sigmaX=2.0)
+    importance *= (mask > 0).astype(np.float32)
+    return np.clip(importance, 0.0, None)
 
 
 def render_typographic_portrait(
@@ -60,9 +82,12 @@ def render_typographic_portrait(
     s = normalize_seed(seed, cfg.default_seed)
     start = perf_counter()
 
-    prep = preprocess_portrait(image_input, ratio_label=ratio_label, long_edge=long_edge)
+    prep = preprocess_portrait(
+        image_input, ratio_label=ratio_label, long_edge=long_edge
+    )
     raw_mask = segment_subject(prep.image_rgb, prep.gray)
     mask = cleanup_mask(raw_mask)
+    importance_map = _build_importance_map(prep.gray, mask)
 
     words = parse_weighted_words(words_text)
     theme = get_theme(theme_name)
@@ -83,6 +108,7 @@ def render_typographic_portrait(
         attempts_per_word=attempts_per_word,
         seed=s,
         font_loader=font_loader,
+        importance_map=importance_map,
     )
 
     h, w = prep.gray.shape
@@ -116,4 +142,23 @@ def render_typographic_portrait(
             )
     except Exception:
         pass
-    return RenderResult(image=canvas, layout=layout, layout_stats=stats, metrics=metrics)
+
+    preprocessed_preview = Image.fromarray(prep.image_rgb, mode="RGB")
+    mask_preview = Image.fromarray(mask, mode="L")
+    if float(importance_map.max()) > 0:
+        norm_importance = (importance_map / float(importance_map.max()) * 255.0).astype(
+            np.uint8
+        )
+    else:
+        norm_importance = np.zeros_like(mask, dtype=np.uint8)
+    importance_preview = Image.fromarray(norm_importance, mode="L")
+
+    return RenderResult(
+        image=canvas,
+        preprocessed_preview=preprocessed_preview,
+        mask_preview=mask_preview,
+        importance_preview=importance_preview,
+        layout=layout,
+        layout_stats=stats,
+        metrics=metrics,
+    )

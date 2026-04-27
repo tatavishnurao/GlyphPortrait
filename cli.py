@@ -14,9 +14,19 @@ from glyphforge.typography.render import render_typographic_portrait
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="GlyphForge CLI")
     p.add_argument("--input", type=Path, required=True, help="Input portrait image")
-    p.add_argument("--words", type=str, required=True, help="Comma/newline separated words")
+    p.add_argument(
+        "--words",
+        type=str,
+        required=True,
+        help="Comma/newline separated words",
+    )
     p.add_argument("--theme", type=str, default="monochrome_dark")
-    p.add_argument("--ratio", type=str, default="4:5", choices=["1:1", "4:5", "16:9", "9:16"])
+    p.add_argument(
+        "--ratio",
+        type=str,
+        default="4:5",
+        choices=["1:1", "4:5", "16:9", "9:16"],
+    )
     p.add_argument("--density", type=float, default=0.65)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--long-edge", type=int, default=1600)

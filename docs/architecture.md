@@ -11,7 +11,8 @@
 5. Keyword parser converts input text into weighted word list.
 6. Layout engine places words inside mask:
    - priority by weight
-   - random sampling with deterministic seed
+   - grayscale/edge-guided importance sampling
+   - deterministic seed
    - bbox-in-mask check
    - occupancy-grid collision rejection
 7. Renderer colors text by theme + local grayscale tone cues.

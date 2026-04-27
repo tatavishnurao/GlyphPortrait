@@ -20,7 +20,9 @@ def find_font(fonts_dir: Path, preferred_name: Optional[str] = None) -> Optional
     return None
 
 
-def load_font(font_path: Optional[Path], size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+def load_font(
+    font_path: Optional[Path], size: int
+) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     if font_path is not None:
         try:
             return ImageFont.truetype(str(font_path), size=size)

@@ -5,11 +5,11 @@ description = "Local-first GPU-assisted typographic portrait generator"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-  "gradio>=4.44.0",
-  "numpy>=1.26.0",
-  "opencv-python>=4.10.0.84",
-  "Pillow>=10.4.0",
-  "torch>=2.3.0",
+    "gradio>=4.44.0",
+    "numpy>=1.26.0",
+    "opencv-python>=4.10.0.84",
+    "Pillow>=10.4.0",
+    "torch>=2.3.0",
 ]
 
 [project.optional-dependencies]

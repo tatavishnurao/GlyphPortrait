@@ -39,9 +39,9 @@ def _segment_with_grabcut(image_rgb: np.ndarray) -> np.ndarray | None:
             max(2, h - (h // 6)),
         )
         cv2.grabCut(image_rgb, mask, rect, bg_model, fg_model, 5, cv2.GC_INIT_WITH_RECT)
-        out = np.where(
-            (mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), 255, 0
-        ).astype(np.uint8)
+        out = np.where((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), 255, 0).astype(
+            np.uint8
+        )
         return out
     except Exception:
         return None

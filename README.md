@@ -1,8 +1,8 @@
 # GlyphForge
 
-Local-first GPU-assisted typographic portrait generator.
-
-GlyphForge turns a portrait into export-quality poster/wallpaper artwork made from real readable words shaped by the subject silhouette.
+GlyphForge is a local-first GPU-assisted typographic portrait generator.
+It turns a portrait into export-quality poster/wallpaper artwork built from
+real, readable words inside a subject silhouette.
 
 ## Why this project
 - Python-first CV + rendering pipeline (not a thin image-gen wrapper)
@@ -12,6 +12,11 @@ GlyphForge turns a portrait into export-quality poster/wallpaper artwork made fr
 ## MVP features
 - Upload portrait
 - Parse words (comma/newline separated)
+- Live stage previews in Gradio:
+  - preprocessed portrait
+  - subject mask
+  - final typographic output
+  - metrics JSON
 - Theme selection:
   - monochrome dark
   - minimal grayscale
@@ -22,6 +27,7 @@ GlyphForge turns a portrait into export-quality poster/wallpaper artwork made fr
   - weighted word priority
   - varied font sizes
   - occupancy-grid collision avoidance
+  - grayscale/edge-guided placement bias
   - deterministic seed option
 - Export presets: `1:1`, `4:5`, `16:9`, `9:16`
 

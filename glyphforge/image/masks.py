@@ -4,7 +4,9 @@ import cv2
 import numpy as np
 
 
-def cleanup_mask(mask: np.ndarray, kernel_size: int = 5, blur_size: int = 7) -> np.ndarray:
+def cleanup_mask(
+    mask: np.ndarray, kernel_size: int = 5, blur_size: int = 7
+) -> np.ndarray:
     binary = (mask > 0).astype(np.uint8) * 255
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (kernel_size, kernel_size))
     cleaned = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel, iterations=1)
