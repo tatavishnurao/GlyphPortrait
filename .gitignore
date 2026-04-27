@@ -1,0 +1,7 @@
+.codex/
+inferenceimg/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+examples/outputs/*.png

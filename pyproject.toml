@@ -1,0 +1,21 @@
+[project]
+name = "glyphforge"
+version = "0.1.0"
+description = "Local-first GPU-assisted typographic portrait generator"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "gradio>=4.44.0",
+  "numpy>=1.26.0",
+  "opencv-python>=4.10.0.84",
+  "Pillow>=10.4.0",
+  "torch>=2.3.0",
+]
+
+[project.optional-dependencies]
+segmentation = ["rembg>=2.0.59"]
+dev = ["pytest>=8.2.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
