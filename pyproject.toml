@@ -1,7 +1,7 @@
 [project]
 name = "glyphforge"
 version = "0.1.0"
-description = "Local-first GPU-assisted typographic portrait generator"
+description = "Local-first typographic portrait generator with optional GPU hooks and metrics"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
