@@ -1,0 +1,13 @@
+{
+  "subject_iou": 0.0373,
+  "jersey_iou": 0.0318,
+  "luminance_mae_subject": 0.3041,
+  "edge_overlap": 0.049,
+  "face_words_placed": 16,
+  "jersey_words_placed": 8,
+  "anchors_placed": 8,
+  "placement_attempts_face": 157,
+  "placement_attempts_jersey": 209,
+  "render_ms": 710.72,
+  "output_resolution": "1920x1080"
+}
