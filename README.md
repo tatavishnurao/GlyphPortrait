@@ -11,6 +11,12 @@ real, readable words placed inside a subject silhouette.
 - Real text placement with mask-awareness and collision control
 - Local Gradio app with deterministic seed and high-res PNG export
 
+## Code Organization
+- `glyphforge/` is the reusable core engine (image processing, typography layout, rendering).
+- `studies/jordan_wallpaper/` is the intentionally overfit reference-recreation study.
+- `scripts/recreate_reference_wallpaper.py` is a thin wrapper around the study pipeline.
+- `experiments/` documents failures, tradeoffs, and iteration notes.
+
 ## Demo Gallery
 
 ### Monochrome Dark

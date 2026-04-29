@@ -1,6 +1,6 @@
 """Target-aware reference wallpaper recreation pipeline."""
 
-from .render_jordan_reference import (
+from .recreate import (
     ReferenceRenderResult,
     render_reference_jordan_poster,
 )

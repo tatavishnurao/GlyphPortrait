@@ -7,9 +7,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from glyphforge.reference_recreation.render_jordan_reference import (
-    render_reference_jordan_poster,
-)
+from studies.jordan_wallpaper.recreate import render_reference_jordan_poster
 
 
 def build_parser() -> argparse.ArgumentParser:
