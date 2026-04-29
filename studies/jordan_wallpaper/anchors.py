@@ -31,3 +31,22 @@ def scale_anchor(anchor: AnchorSpec, width: int, height: int) -> tuple[int, int,
     y = int(anchor.y * height)
     size = max(8, int(anchor.size * (width / 1920.0)))
     return x, y, size
+
+
+def anchor_bbox(
+    anchor: AnchorSpec,
+    width: int,
+    height: int,
+    font_loader,
+    pad: int = 8,
+) -> tuple[int, int, int, int]:
+    x, y, size = scale_anchor(anchor, width=width, height=height)
+    font = font_loader(size)
+    left, top, right, bottom = font.getbbox(anchor.text)
+    w = max(1, right - left)
+    h = max(1, bottom - top)
+    x0 = max(0, x - pad)
+    y0 = max(0, y - pad)
+    x1 = min(width, x + w + pad)
+    y1 = min(height, y + h + pad)
+    return x0, y0, x1, y1

@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
+
+# Allow `python scripts/recreate_reference_wallpaper.py ...` from repo root.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from studies.jordan_wallpaper.recreate import render_reference_jordan_poster
 
@@ -85,11 +91,25 @@ def main() -> None:
     result.image.save(args.output)
     _save_debug_assets(args.output.parent, result)
 
-    # Save canonical recreation artifact for this run.
-    v1 = args.output.parent / "recreation_v1.png"
-    result.image.save(v1)
+    # Save canonical final and staged artifacts for diagnostics.
+    result.image.save(args.output.parent / "recreation_v1.png")
+    stage_map = {
+        "stage_01_masks": "stage_01_masks.png",
+        "stage_02_microtext": "stage_02_microtext.png",
+        "stage_03_structure_words": "stage_03_structure_words.png",
+        "stage_04_jersey_words": "stage_04_jersey_words.png",
+        "stage_05_anchors": "stage_05_anchors.png",
+        "stage_06_final": "stage_06_final.png",
+    }
+    for key, filename in stage_map.items():
+        if key in result.stages:
+            result.stages[key].save(args.output.parent / filename)
+
     _save_side_by_side(
-        target, result.image, args.output.parent / "side_by_side_v1.png", output_size
+        target,
+        result.image,
+        args.output.parent / "side_by_side_final.png",
+        output_size,
     )
 
     print(json.dumps(result.metrics, indent=2))

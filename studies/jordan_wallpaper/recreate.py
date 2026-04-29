@@ -21,7 +21,12 @@ from .metrics import (
 )
 from .regions import ReferenceRegions, build_reference_regions
 from .target_analysis import extract_nonblack_subject_mask, extract_red_jersey_mask
-from .typography_passes import render_anchor_pass, render_slogan, render_text_pass
+from .typography_passes import (
+    render_anchor_pass,
+    render_slogan,
+    render_text_pass,
+    reserve_anchor_regions,
+)
 
 
 @dataclass
@@ -30,15 +35,17 @@ class ReferenceRenderResult:
     regions: ReferenceRegions
     target_rgb: np.ndarray
     metrics: Dict[str, float | int | str]
+    stages: Dict[str, Image.Image]
 
 
 def _build_importance(
     luminance: np.ndarray, edge_map: np.ndarray, mask: np.ndarray
 ) -> np.ndarray:
     darkness = 1.0 - np.clip(luminance, 0.0, 1.0)
-    importance = (0.65 * darkness) + (0.35 * np.clip(edge_map, 0.0, 1.0)) + 0.02
+    importance = (0.75 * darkness) + (0.45 * np.clip(edge_map, 0.0, 1.0)) + 0.01
     importance *= (mask > 0).astype(np.float32)
-    return cv2.GaussianBlur(importance.astype(np.float32), (0, 0), sigmaX=1.3)
+    importance = np.power(np.clip(importance, 0.0, None), 1.35)
+    return cv2.GaussianBlur(importance.astype(np.float32), (0, 0), sigmaX=1.1)
 
 
 def render_reference_jordan_poster(
@@ -75,43 +82,74 @@ def render_reference_jordan_poster(
         regions.edge_map,
         regions.subject_mask,
     )
+    stages: Dict[str, Image.Image] = {}
+    stage_times: Dict[str, float] = {}
+
+    def mark_stage(name: str) -> None:
+        stages[name] = output.copy()
+
+    # Reserve anchor footprints early so the random passes don't crowd them out.
+    reserved_anchors = reserve_anchor_regions(
+        occupancy_mask=occupancy,
+        anchors=JORDAN_REFERENCE_ANCHORS,
+        font_loader=font_loader,
+        width=output_size[0],
+        height=output_size[1],
+        pad=10,
+    )
+    # Visual debug: packed masks panel for stage_01.
+    mask_panel = np.zeros((output_size[1], output_size[0], 3), dtype=np.uint8)
+    mask_panel[..., 0] = regions.jersey_mask
+    mask_panel[..., 1] = regions.face_mask
+    mask_panel[..., 2] = regions.subject_mask
+    stages["stage_01_masks"] = Image.fromarray(mask_panel, mode="RGB")
 
     def face_color(item):
         y = min(regions.luminance_map.shape[0] - 1, max(0, item.y))
         x = min(regions.luminance_map.shape[1] - 1, max(0, item.x))
         lum = float(regions.luminance_map[y, x])
-        v = int(145 + (1.0 - lum) * 105)
+        v = int(130 + (1.0 - lum) * 120)
         return (v, v, v)
 
+    t_pass = perf_counter()
     face_words, face_stats = render_text_pass(
         image=output,
         occupancy_mask=occupancy,
         region_mask=regions.face_mask,
         importance_map=base_importance,
-        words_text=words_text,
+        words_text=(
+            "MVP,CLUTCH,LEGEND,GOAT,DEFENSE,CHAMPION,WINNER,FOCUS,DISCIPLINE,"
+            "RESILIENCE,DRIVE,VISION,INTENSITY,FIERCE,LOCKDOWN,MVP,GOAT,CLUTCH"
+        ),
         font_loader=font_loader,
         color_picker=face_color,
-        min_size=6,
-        max_size=13,
-        density=0.58,
-        attempts_per_word=220,
+        min_size=5,
+        max_size=11,
+        density=0.72,
+        attempts_per_word=300,
         seed=seed,
     )
+    stage_times["stage_02_microtext_ms"] = round((perf_counter() - t_pass) * 1000.0, 2)
+    mark_stage("stage_02_microtext")
+
     if include_structure_pass:
+        t_pass = perf_counter()
         _structure_words, _ = render_text_pass(
             image=output,
             occupancy_mask=occupancy,
             region_mask=regions.face_mask,
             importance_map=base_importance,
-            words_text="MVP,CLUTCH,LEGEND,GOAT,DEFENSE,CHAMPION,WINNER,FOCUS",
+            words_text="MVP,CLUTCH,LEGEND,GOAT,DEFENSE,CHAMPION,WINNER,FOCUS,AIR JORDAN",
             font_loader=font_loader,
             color_picker=lambda _item: (225, 225, 225),
-            min_size=14,
-            max_size=32,
+            min_size=12,
+            max_size=28,
             density=0.42,
-            attempts_per_word=160,
+            attempts_per_word=220,
             seed=seed + 77,
         )
+        stage_times["stage_03_structure_ms"] = round((perf_counter() - t_pass) * 1000.0, 2)
+    mark_stage("stage_03_structure_words")
 
     def jersey_color(item):
         y = min(regions.luminance_map.shape[0] - 1, max(0, item.y))
@@ -125,23 +163,30 @@ def render_reference_jordan_poster(
 
     jersey_stats = type(face_stats)(placed=0, attempts=0)
     if include_jersey_pass:
+        t_pass = perf_counter()
         _jersey_words, jersey_stats = render_text_pass(
             image=output,
             occupancy_mask=occupancy,
             region_mask=regions.jersey_mask,
             importance_map=base_importance,
-            words_text="BULLS,23,CHICAGO,FINALS,DYNASTY,SIX RINGS,AIR,WIN",
+            words_text=(
+                "BULLS,23,CHICAGO,DYNASTY,SIX RINGS,FINALS,RED,BLACK,UNITED CENTER,"
+                "CHAMPIONSHIP,WIN,BULLS,23,CHICAGO,SIX RINGS"
+            ),
             font_loader=font_loader,
             color_picker=jersey_color,
-            min_size=12,
-            max_size=36,
-            density=0.55,
-            attempts_per_word=200,
+            min_size=10,
+            max_size=34,
+            density=0.65,
+            attempts_per_word=260,
             seed=seed + 33,
         )
+        stage_times["stage_04_jersey_ms"] = round((perf_counter() - t_pass) * 1000.0, 2)
+    mark_stage("stage_04_jersey_words")
 
     anchors_placed = 0
     if include_anchor_pass:
+        t_pass = perf_counter()
         anchors_placed = render_anchor_pass(
             image=output,
             anchors=JORDAN_REFERENCE_ANCHORS,
@@ -149,6 +194,8 @@ def render_reference_jordan_poster(
             width=output_size[0],
             height=output_size[1],
         )
+        stage_times["stage_05_anchors_ms"] = round((perf_counter() - t_pass) * 1000.0, 2)
+    mark_stage("stage_05_anchors")
     if include_slogan_pass:
         render_slogan(
             output,
@@ -157,6 +204,7 @@ def render_reference_jordan_poster(
             canvas_w=output_size[0],
             canvas_h=output_size[1],
         )
+    mark_stage("stage_06_final")
 
     out_rgb = np.array(output.convert("RGB"))
     out_lum = cv2.cvtColor(out_rgb, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255.0
@@ -182,10 +230,12 @@ def render_reference_jordan_poster(
             "face_words_placed": face_stats.placed,
             "jersey_words_placed": jersey_stats.placed,
             "anchors_placed": anchors_placed,
+            "anchors_reserved": reserved_anchors,
             "placement_attempts_face": face_stats.attempts,
             "placement_attempts_jersey": jersey_stats.attempts,
             "render_ms": round((perf_counter() - t0) * 1000.0, 2),
             "output_resolution": f"{output_size[0]}x{output_size[1]}",
+            **stage_times,
         }
     )
 
@@ -194,4 +244,5 @@ def render_reference_jordan_poster(
         regions=regions,
         target_rgb=target_rgb,
         metrics=metrics,
+        stages=stages,
     )

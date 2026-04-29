@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 from glyphforge.keywords.parser import parse_weighted_words
 from glyphforge.typography.layout import LayoutWord, generate_layout
 
-from .anchors import AnchorSpec, scale_anchor
+from .anchors import AnchorSpec, anchor_bbox, scale_anchor
 
 
 @dataclass
@@ -100,3 +100,26 @@ def render_slogan(
     x = int(canvas_w * 0.33)
     y = int(canvas_h * 0.50)
     draw.text((x, y), text, fill=color, font=font)
+
+
+def reserve_anchor_regions(
+    occupancy_mask: np.ndarray,
+    anchors: Sequence[AnchorSpec],
+    font_loader,
+    width: int,
+    height: int,
+    pad: int = 8,
+) -> int:
+    reserved = 0
+    for anchor in anchors:
+        x0, y0, x1, y1 = anchor_bbox(
+            anchor=anchor,
+            width=width,
+            height=height,
+            font_loader=font_loader,
+            pad=pad,
+        )
+        if x1 > x0 and y1 > y0:
+            occupancy_mask[y0:y1, x0:x1] = 255
+            reserved += 1
+    return reserved

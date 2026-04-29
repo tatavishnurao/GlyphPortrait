@@ -1,13 +1,18 @@
 {
-  "subject_iou": 0.0373,
-  "jersey_iou": 0.0318,
-  "luminance_mae_subject": 0.3041,
-  "edge_overlap": 0.049,
-  "face_words_placed": 16,
-  "jersey_words_placed": 8,
+  "subject_iou": 0.0005,
+  "jersey_iou": 0.0,
+  "luminance_mae_subject": 0.5169,
+  "edge_overlap": 0.0113,
+  "face_words_placed": 4,
+  "jersey_words_placed": 0,
   "anchors_placed": 8,
-  "placement_attempts_face": 157,
-  "placement_attempts_jersey": 209,
-  "render_ms": 710.72,
-  "output_resolution": "1920x1080"
+  "anchors_reserved": 8,
+  "placement_attempts_face": 4695,
+  "placement_attempts_jersey": 3900,
+  "render_ms": 3872.3,
+  "output_resolution": "1280x720",
+  "stage_02_microtext_ms": 1610.03,
+  "stage_03_structure_ms": 676.83,
+  "stage_04_jersey_ms": 1452.71,
+  "stage_05_anchors_ms": 3.77
 }
