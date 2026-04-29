@@ -1,0 +1,7 @@
+This folder stores generated recreation outputs.
+
+The original Michael Jordan reference image should remain local under
+`reference_img/` and is not committed as project content.
+
+Expected local input path for scripts:
+`reference_img/Michael-Jordan-Wallpaper-Desktop-1.jpg`
