@@ -5,6 +5,9 @@
 Run target-aware reconstruction iterations against a local Jordan-style reference
 to understand what still blocks reference-grade output.
 
+This pipeline is intentionally target-aware and overfit to the supplied
+wallpaper for diagnosis. It is not yet a general portrait generator.
+
 ## Pipeline Used
 
 - Subject/jersey/face decomposition from the target image
@@ -19,10 +22,11 @@ to understand what still blocks reference-grade output.
 ## Iteration Artifacts
 
 - `examples/reference_recreation/recreation_v1.png`
-- `examples/reference_recreation/recreation_v2.png`
-- `examples/reference_recreation/recreation_v3.png`
-- `examples/reference_recreation/side_by_side_v3.png`
+- `examples/reference_recreation/side_by_side_v1.png`
 - `examples/reference_recreation/recreation_metrics.json`
+
+The script currently saves a single canonical recreation per run (`v1`) to
+avoid fake iteration artifacts.
 
 ## Remaining Gaps
 
