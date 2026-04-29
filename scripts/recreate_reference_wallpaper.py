@@ -7,9 +7,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from glyphforge.reference_recreation.render_jordan_reference import (
-    render_reference_jordan_poster,
-)
+from studies.jordan_wallpaper.recreate import render_reference_jordan_poster
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -87,15 +85,11 @@ def main() -> None:
     result.image.save(args.output)
     _save_debug_assets(args.output.parent, result)
 
-    # Produce versioned artifacts in the same folder for iteration tracking.
+    # Save canonical recreation artifact for this run.
     v1 = args.output.parent / "recreation_v1.png"
-    v2 = args.output.parent / "recreation_v2.png"
-    v3 = args.output.parent / "recreation_v3.png"
     result.image.save(v1)
-    result.image.save(v2)
-    result.image.save(v3)
     _save_side_by_side(
-        target, result.image, args.output.parent / "side_by_side_v3.png", output_size
+        target, result.image, args.output.parent / "side_by_side_v1.png", output_size
     )
 
     print(json.dumps(result.metrics, indent=2))

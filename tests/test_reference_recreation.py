@@ -1,8 +1,8 @@
 import numpy as np
 
-from glyphforge.reference_recreation.anchors import AnchorSpec, scale_anchor
-from glyphforge.reference_recreation.metrics import build_metrics
-from glyphforge.reference_recreation.target_analysis import (
+from studies.jordan_wallpaper.anchors import AnchorSpec, scale_anchor
+from studies.jordan_wallpaper.metrics import build_metrics
+from studies.jordan_wallpaper.target_analysis import (
     extract_nonblack_subject_mask,
     extract_red_jersey_mask,
 )

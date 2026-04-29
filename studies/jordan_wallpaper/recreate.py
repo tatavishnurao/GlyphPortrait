@@ -47,6 +47,10 @@ def render_reference_jordan_poster(
     output_size: tuple[int, int] = (1920, 1080),
     seed: int = 23,
     slogan: str = "change the game.",
+    include_structure_pass: bool = True,
+    include_jersey_pass: bool = True,
+    include_anchor_pass: bool = True,
+    include_slogan_pass: bool = True,
     config: AppConfig | None = None,
 ) -> ReferenceRenderResult:
     cfg = config or AppConfig()
@@ -93,20 +97,21 @@ def render_reference_jordan_poster(
         attempts_per_word=220,
         seed=seed,
     )
-    _structure_words, _ = render_text_pass(
-        image=output,
-        occupancy_mask=occupancy,
-        region_mask=regions.face_mask,
-        importance_map=base_importance,
-        words_text="MVP,CLUTCH,LEGEND,GOAT,DEFENSE,CHAMPION,WINNER,FOCUS",
-        font_loader=font_loader,
-        color_picker=lambda _item: (225, 225, 225),
-        min_size=14,
-        max_size=32,
-        density=0.42,
-        attempts_per_word=160,
-        seed=seed + 77,
-    )
+    if include_structure_pass:
+        _structure_words, _ = render_text_pass(
+            image=output,
+            occupancy_mask=occupancy,
+            region_mask=regions.face_mask,
+            importance_map=base_importance,
+            words_text="MVP,CLUTCH,LEGEND,GOAT,DEFENSE,CHAMPION,WINNER,FOCUS",
+            font_loader=font_loader,
+            color_picker=lambda _item: (225, 225, 225),
+            min_size=14,
+            max_size=32,
+            density=0.42,
+            attempts_per_word=160,
+            seed=seed + 77,
+        )
 
     def jersey_color(item):
         y = min(regions.luminance_map.shape[0] - 1, max(0, item.y))
@@ -118,35 +123,40 @@ def render_reference_jordan_poster(
             return (200, 26, 36)
         return (235, 235, 235)
 
-    _jersey_words, jersey_stats = render_text_pass(
-        image=output,
-        occupancy_mask=occupancy,
-        region_mask=regions.jersey_mask,
-        importance_map=base_importance,
-        words_text="BULLS,23,CHICAGO,FINALS,DYNASTY,SIX RINGS,AIR,WIN",
-        font_loader=font_loader,
-        color_picker=jersey_color,
-        min_size=12,
-        max_size=36,
-        density=0.55,
-        attempts_per_word=200,
-        seed=seed + 33,
-    )
+    jersey_stats = type(face_stats)(placed=0, attempts=0)
+    if include_jersey_pass:
+        _jersey_words, jersey_stats = render_text_pass(
+            image=output,
+            occupancy_mask=occupancy,
+            region_mask=regions.jersey_mask,
+            importance_map=base_importance,
+            words_text="BULLS,23,CHICAGO,FINALS,DYNASTY,SIX RINGS,AIR,WIN",
+            font_loader=font_loader,
+            color_picker=jersey_color,
+            min_size=12,
+            max_size=36,
+            density=0.55,
+            attempts_per_word=200,
+            seed=seed + 33,
+        )
 
-    anchors_placed = render_anchor_pass(
-        image=output,
-        anchors=JORDAN_REFERENCE_ANCHORS,
-        font_loader=font_loader,
-        width=output_size[0],
-        height=output_size[1],
-    )
-    render_slogan(
-        output,
-        text=slogan,
-        font_loader=font_loader,
-        canvas_w=output_size[0],
-        canvas_h=output_size[1],
-    )
+    anchors_placed = 0
+    if include_anchor_pass:
+        anchors_placed = render_anchor_pass(
+            image=output,
+            anchors=JORDAN_REFERENCE_ANCHORS,
+            font_loader=font_loader,
+            width=output_size[0],
+            height=output_size[1],
+        )
+    if include_slogan_pass:
+        render_slogan(
+            output,
+            text=slogan,
+            font_loader=font_loader,
+            canvas_w=output_size[0],
+            canvas_h=output_size[1],
+        )
 
     out_rgb = np.array(output.convert("RGB"))
     out_lum = cv2.cvtColor(out_rgb, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255.0
