@@ -73,6 +73,13 @@ def _save_side_by_side(
     merged.save(side_path)
 
 
+def _images_equal(a: Image.Image, b: Image.Image) -> bool:
+    return np.array_equal(
+        np.array(a.convert("RGB"), dtype=np.uint8),
+        np.array(b.convert("RGB"), dtype=np.uint8),
+    )
+
+
 def main() -> None:
     args = build_parser().parse_args()
     if not args.target.exists():
@@ -101,9 +108,13 @@ def main() -> None:
         "stage_05_anchors": "stage_05_anchors.png",
         "stage_06_final": "stage_06_final.png",
     }
+    previous_stage: Image.Image | None = None
     for key, filename in stage_map.items():
         if key in result.stages:
-            result.stages[key].save(args.output.parent / filename)
+            current = result.stages[key]
+            if previous_stage is None or not _images_equal(previous_stage, current):
+                current.save(args.output.parent / filename)
+            previous_stage = current
 
     _save_side_by_side(
         target,
