@@ -1,0 +1,121 @@
+{
+  "total_words_drawn": 3676,
+  "shadow_words": 1535,
+  "tone_words": 1766,
+  "contour_words": 326,
+  "lane_words": 39,
+  "lane_words_by_id": {
+    "brow_ridge": 8,
+    "upper_eye_socket": 11,
+    "nose_bridge": 7,
+    "cheek_plane": 6,
+    "mouth_crease": 6,
+    "neck_column": 1
+  },
+  "manual_anchor_words": 10,
+  "average_alpha": 95.26196953210011,
+  "face_luma_mae": 38.73898696899414,
+  "edge_overlap_face": 0.10948048136190197,
+  "protected_dark_zone_fill_ratio": 0.14596689543802988,
+  "render_time": 2.6439655290014343,
+  "region_metrics": {
+    "global_shadow": {
+      "shadow_words": 1535,
+      "tone_words": 0,
+      "contour_words": 0,
+      "anchors": 0,
+      "alpha_sum": 88623,
+      "average_alpha": 57.73485342019544
+    },
+    "forehead": {
+      "shadow_words": 0,
+      "tone_words": 405,
+      "contour_words": 0,
+      "anchors": 3,
+      "alpha_sum": 54383,
+      "average_alpha": 133.29166666666666,
+      "edge_overlap": 0.13943161634103018
+    },
+    "brow": {
+      "shadow_words": 0,
+      "tone_words": 158,
+      "contour_words": 53,
+      "anchors": 0,
+      "alpha_sum": 22323,
+      "average_alpha": 105.79620853080569,
+      "edge_overlap": 0.17025440313111545
+    },
+    "eye_sockets": {
+      "shadow_words": 0,
+      "tone_words": 157,
+      "contour_words": 66,
+      "anchors": 0,
+      "alpha_sum": 22922,
+      "average_alpha": 102.78923766816143,
+      "edge_overlap": 0.17734724292101342
+    },
+    "nose_bridge": {
+      "shadow_words": 0,
+      "tone_words": 285,
+      "contour_words": 52,
+      "anchors": 0,
+      "alpha_sum": 42940,
+      "average_alpha": 127.41839762611276,
+      "edge_overlap": 0.055205047318611984
+    },
+    "cheek": {
+      "shadow_words": 0,
+      "tone_words": 389,
+      "contour_words": 61,
+      "anchors": 3,
+      "alpha_sum": 58151,
+      "average_alpha": 128.36865342163355,
+      "edge_overlap": 0.042923433874709975
+    },
+    "jaw": {
+      "shadow_words": 0,
+      "tone_words": 112,
+      "contour_words": 55,
+      "anchors": 1,
+      "alpha_sum": 22987,
+      "average_alpha": 136.82738095238096,
+      "edge_overlap": 0.06542056074766354
+    },
+    "mouth_chin": {
+      "shadow_words": 0,
+      "tone_words": 188,
+      "contour_words": 51,
+      "anchors": 2,
+      "alpha_sum": 27647,
+      "average_alpha": 114.71784232365145,
+      "edge_overlap": 0.11377245508982035
+    },
+    "neck": {
+      "shadow_words": 0,
+      "tone_words": 72,
+      "contour_words": 27,
+      "anchors": 1,
+      "alpha_sum": 10207,
+      "average_alpha": 102.07,
+      "edge_overlap": 0.21804511278195488
+    }
+  },
+  "edge_overlap_by_lane": {
+    "brow_ridge": 0.3055555555555556,
+    "upper_eye_socket": 0.15625,
+    "nose_bridge": 0.056338028169014086,
+    "cheek_plane": 0.02040816326530612,
+    "mouth_crease": 0.2391304347826087,
+    "jawline": 0.4444444444444444,
+    "neck_column": 0.5555555555555556
+  },
+  "contour_quotas": {
+    "brow": 45,
+    "eye_sockets": 55,
+    "nose_bridge": 45,
+    "cheek": 55,
+    "jaw": 55,
+    "mouth_chin": 45,
+    "neck": 45
+  }
+}
