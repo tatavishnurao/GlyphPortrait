@@ -1,0 +1,270 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "face_crop_norm": [0.6667, 0.125, 0.8932, 0.6296],
+    "jersey_crop_norm": [0.6302, 0.5324, 0.9948, 0.9907]
+  },
+  "word_inventory": {
+    "anchors": ["NBA Rookie of the Year", "MVP", "Air Jordan", "Dedication", "Love of the Game", "Dominance", "Chicago Bulls", "Scoring", "BULLS", "23"],
+    "structure": ["All American Game", "NBA Champion", "Finals MVP", "Named to the All-Star Team", "NBA Most Valuable Player", "All-Defensive First Team"],
+    "contour": ["Dominance", "Scoring", "Finals MVP", "1984", "1985", "Chicago Bulls", "I can't accept"],
+    "texture": ["Slam Dunk", "Rookie", "game winner", "six-time NBA Champion", "63 points", "assists", "rebounds", "steals", "blocks"],
+    "shadow": ["Slam Dunk", "Defense", "Rookie", "Chicago", "finals", "MVP", "Air Jordan"],
+    "highlight": ["Air Jordan", "MVP", "Scoring", "Dominance", "NBA Rookie of the Year"],
+    "jersey_identity": ["BULLS", "23", "Chicago Bulls", "NBA Most Valuable Player", "Named to the All-Star Team"]
+  },
+  "regions": [
+    {
+      "id": "forehead",
+      "bbox_norm": [0.706, 0.148, 0.884, 0.292],
+      "roles": ["anchor", "structure", "texture", "highlight"],
+      "density": "high",
+      "orientation": ["radial_skull_following", "horizontal", "shallow_diagonal"],
+      "color_family": ["bright_white", "mid_gray", "dark_gray"],
+      "word_roles": {
+        "anchor": ["NBA Rookie of the Year", "MVP"],
+        "structure": ["All American Game", "Chicago Bulls"],
+        "texture": ["1984", "1985", "1986", "63 points", "Slam Dunk"]
+      }
+    },
+    {
+      "id": "brow",
+      "bbox_norm": [0.718, 0.274, 0.868, 0.352],
+      "roles": ["shadow", "structure", "contour"],
+      "density": "high_dark",
+      "orientation": ["horizontal", "shallow_diagonal"],
+      "color_family": ["dark_gray", "mid_gray"],
+      "word_roles": {
+        "structure": ["MVP", "Chicago Bulls"],
+        "shadow": ["Slam Dunk", "Defense", "Rookie"]
+      }
+    },
+    {
+      "id": "eye_sockets",
+      "bbox_norm": [0.721, 0.313, 0.875, 0.421],
+      "roles": ["protected_dark_zone", "shadow", "contour"],
+      "density": "high_dark",
+      "orientation": ["horizontal", "contour_following"],
+      "color_family": ["dark_gray"],
+      "word_roles": {
+        "shadow": ["Slam Dunk", "Defense", "MVP"],
+        "contour": ["Scoring", "Finals MVP"]
+      }
+    },
+    {
+      "id": "nose_bridge",
+      "bbox_norm": [0.786, 0.352, 0.879, 0.523],
+      "roles": ["contour", "highlight", "texture"],
+      "density": "medium_high",
+      "orientation": ["vertical", "diagonal", "contour_following"],
+      "color_family": ["bright_white", "mid_gray", "dark_gray"],
+      "word_roles": {
+        "contour": ["Scoring", "Finals MVP", "Chicago Bulls"],
+        "highlight": ["Scoring"]
+      }
+    },
+    {
+      "id": "cheek",
+      "bbox_norm": [0.706, 0.365, 0.842, 0.533],
+      "roles": ["anchor", "structure", "shadow"],
+      "density": "medium_high",
+      "orientation": ["horizontal", "diagonal"],
+      "color_family": ["mid_gray", "dark_gray"],
+      "word_roles": {
+        "anchor": ["Air Jordan", "Dedication", "Love of the Game"],
+        "shadow": ["Rookie", "Slam Dunk", "Defense"]
+      }
+    },
+    {
+      "id": "jaw",
+      "bbox_norm": [0.679, 0.468, 0.784, 0.655],
+      "roles": ["anchor", "contour", "shadow"],
+      "density": "medium",
+      "orientation": ["vertical", "jawline_following", "diagonal"],
+      "color_family": ["bright_white", "mid_gray", "dark_gray"],
+      "word_roles": {
+        "anchor": ["Dominance"],
+        "contour": ["1984", "1985", "Finals MVP"]
+      }
+    },
+    {
+      "id": "mouth_chin",
+      "bbox_norm": [0.765, 0.493, 0.873, 0.622],
+      "roles": ["contour", "highlight", "shadow"],
+      "density": "medium",
+      "orientation": ["horizontal", "shallow_diagonal", "contour_following"],
+      "color_family": ["bright_white", "mid_gray", "dark_gray"],
+      "word_roles": {
+        "contour": ["Scoring", "Champion", "Finals MVP"],
+        "shadow": ["Rookie", "Defense"]
+      }
+    },
+    {
+      "id": "neck",
+      "bbox_norm": [0.714, 0.574, 0.828, 0.748],
+      "roles": ["structure", "shadow", "contour"],
+      "density": "high_dark",
+      "orientation": ["vertical", "neck_following", "diagonal"],
+      "color_family": ["mid_gray", "dark_gray"],
+      "word_roles": {
+        "structure": ["Finals MVP", "NBA Champion"],
+        "contour": ["Dominance", "1985"]
+      }
+    },
+    {
+      "id": "shoulder",
+      "bbox_norm": [0.633, 0.625, 0.997, 1.0],
+      "roles": ["structure", "texture", "region_specific_identity"],
+      "density": "high",
+      "orientation": ["vertical", "diagonal", "shoulder_following"],
+      "color_family": ["white", "mid_gray", "red"],
+      "word_roles": {
+        "anchor": ["Give Up", "Jordan"],
+        "texture": ["All-Defensive First Team", "I can't accept"]
+      }
+    },
+    {
+      "id": "jersey_chest",
+      "bbox_norm": [0.688, 0.639, 0.89, 0.991],
+      "roles": ["region_specific_identity", "anchor", "texture"],
+      "density": "very_high",
+      "orientation": ["diagonal", "vertical", "jersey_seam_following"],
+      "color_family": ["red", "deep_red", "cream_white"],
+      "word_roles": {
+        "anchor": ["BULLS", "23"],
+        "structure": ["Named to the All-Star Team", "NBA Most Valuable Player", "Chicago Bulls"]
+      }
+    },
+    {
+      "id": "jersey_trim",
+      "bbox_norm": [0.647, 0.598, 0.928, 0.72],
+      "roles": ["highlight", "contour", "region_specific_identity"],
+      "density": "medium_high",
+      "orientation": ["curved", "jersey_seam_following"],
+      "color_family": ["bright_white", "cream_white", "red"],
+      "word_roles": {
+        "contour": ["I can't accept", "Named to the All-Star Team", "NBA Champion"]
+      }
+    }
+  ],
+  "protected_dark_zones": [
+    {
+      "id": "brow_shadow",
+      "bbox_norm": [0.71, 0.29, 0.86, 0.36],
+      "max_luma": 58,
+      "max_alpha_bias": 0.55
+    },
+    {
+      "id": "eye_socket_left",
+      "bbox_norm": [0.715, 0.322, 0.79, 0.417],
+      "max_luma": 45,
+      "max_alpha_bias": 0.42
+    },
+    {
+      "id": "eye_socket_right",
+      "bbox_norm": [0.814, 0.315, 0.878, 0.42],
+      "max_luma": 46,
+      "max_alpha_bias": 0.42
+    },
+    {
+      "id": "mouth_crease",
+      "bbox_norm": [0.779, 0.526, 0.869, 0.583],
+      "max_luma": 64,
+      "max_alpha_bias": 0.58
+    },
+    {
+      "id": "under_jaw_neck_shadow",
+      "bbox_norm": [0.716, 0.585, 0.84, 0.72],
+      "max_luma": 58,
+      "max_alpha_bias": 0.55
+    }
+  ],
+  "anchor_placements": [
+    {"text": "NBA Rookie of the Year", "region": "forehead", "pos_norm": [0.733, 0.202], "font_tier": "major_structure", "size_px": 24, "angle": 5, "color": "bright_white", "alpha": 215},
+    {"text": "MVP", "region": "forehead", "pos_norm": [0.731, 0.262], "font_tier": "anchor", "size_px": 43, "angle": -5, "color": "bright_white", "alpha": 220},
+    {"text": "Chicago Bulls", "region": "forehead", "pos_norm": [0.778, 0.266], "font_tier": "major_structure", "size_px": 24, "angle": 52, "color": "mid_gray", "alpha": 205},
+    {"text": "Air Jordan", "region": "cheek", "pos_norm": [0.709, 0.338], "font_tier": "anchor", "size_px": 30, "angle": 4, "color": "bright_white", "alpha": 210},
+    {"text": "Dedication", "region": "cheek", "pos_norm": [0.712, 0.421], "font_tier": "anchor", "size_px": 34, "angle": 25, "color": "mid_gray", "alpha": 175},
+    {"text": "Love of the Game", "region": "cheek", "pos_norm": [0.725, 0.468], "font_tier": "major_structure", "size_px": 23, "angle": 12, "color": "mid_gray", "alpha": 175},
+    {"text": "Dominance", "region": "jaw", "pos_norm": [0.697, 0.552], "font_tier": "anchor", "size_px": 31, "angle": 72, "color": "bright_white", "alpha": 215},
+    {"text": "Finals MVP", "region": "neck", "pos_norm": [0.751, 0.594], "font_tier": "major_structure", "size_px": 23, "angle": 45, "color": "mid_gray", "alpha": 165},
+    {"text": "Scoring", "region": "mouth_chin", "pos_norm": [0.813, 0.498], "font_tier": "major_structure", "size_px": 24, "angle": -8, "color": "bright_white", "alpha": 205},
+    {"text": "Champion", "region": "mouth_chin", "pos_norm": [0.804, 0.56], "font_tier": "medium_filler", "size_px": 18, "angle": -5, "color": "mid_gray", "alpha": 170}
+  ],
+  "contour_lanes": [
+    {
+      "id": "brow_ridge",
+      "region": "brow",
+      "points_norm": [[0.72, 0.31], [0.78, 0.29], [0.86, 0.31]],
+      "words": ["MVP", "Chicago Bulls", "Defense"],
+      "size_range": [10, 18],
+      "alpha_range": [150, 220],
+      "color_family": "mid_gray_to_white"
+    },
+    {
+      "id": "upper_eye_socket",
+      "region": "eye_sockets",
+      "points_norm": [[0.72, 0.36], [0.78, 0.35], [0.84, 0.36], [0.875, 0.38]],
+      "words": ["Defense", "MVP", "Finals MVP"],
+      "size_range": [8, 14],
+      "alpha_range": [130, 190],
+      "color_family": "dark_gray_to_mid_gray"
+    },
+    {
+      "id": "nose_bridge",
+      "region": "nose_bridge",
+      "points_norm": [[0.83, 0.35], [0.84, 0.43], [0.82, 0.52]],
+      "words": ["Scoring", "Finals MVP", "Champion"],
+      "size_range": [9, 16],
+      "alpha_range": [145, 215],
+      "color_family": "mid_gray_to_white"
+    },
+    {
+      "id": "cheek_plane",
+      "region": "cheek",
+      "points_norm": [[0.72, 0.39], [0.77, 0.45], [0.83, 0.51]],
+      "words": ["Air Jordan", "Dedication", "Love of the Game"],
+      "size_range": [12, 22],
+      "alpha_range": [135, 210],
+      "color_family": "mid_gray"
+    },
+    {
+      "id": "mouth_crease",
+      "region": "mouth_chin",
+      "points_norm": [[0.78, 0.53], [0.82, 0.55], [0.87, 0.55]],
+      "words": ["Scoring", "Champion", "Finals MVP"],
+      "size_range": [9, 15],
+      "alpha_range": [140, 210],
+      "color_family": "mid_gray_to_white"
+    },
+    {
+      "id": "jawline",
+      "region": "jaw",
+      "points_norm": [[0.70, 0.48], [0.71, 0.56], [0.75, 0.64]],
+      "words": ["Dominance", "1984", "1985"],
+      "size_range": [12, 22],
+      "alpha_range": [150, 225],
+      "color_family": "mid_gray_to_white"
+    },
+    {
+      "id": "neck_column",
+      "region": "neck",
+      "points_norm": [[0.735, 0.58], [0.745, 0.66], [0.77, 0.735]],
+      "words": ["Finals MVP", "NBA Champion", "Dominance"],
+      "size_range": [10, 18],
+      "alpha_range": [135, 205],
+      "color_family": "dark_gray_to_mid_gray"
+    }
+  ],
+  "layer_order": [
+    "black_background",
+    "face_silhouette_mask",
+    "shadow_microtext",
+    "tone_texture",
+    "contour_stroke_text",
+    "manual_anatomy_anchors",
+    "protected_dark_zone_modulation",
+    "final_silhouette_clipping"
+  ]
+}

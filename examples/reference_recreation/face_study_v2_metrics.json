@@ -1,0 +1,12 @@
+{
+  "total_words_drawn": 3644,
+  "shadow_words": 1535,
+  "tone_words": 1749,
+  "contour_words": 350,
+  "manual_anchor_words": 10,
+  "average_alpha": 81.72502744237102,
+  "face_luma_mae": 36.506507873535156,
+  "edge_overlap_face": 0.0652637999390058,
+  "protected_dark_zone_fill_ratio": 0.07672184093661688,
+  "render_time": 4.309570559002168
+}
