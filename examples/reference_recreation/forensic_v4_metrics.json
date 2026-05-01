@@ -1,0 +1,19 @@
+{
+  "mae_full_rgb": 18.31621742248535,
+  "mae_face_rgb": 23.139108657836914,
+  "mae_head_neck_rgb": 24.783750534057617,
+  "mae_subject_rgb": 32.37317657470703,
+  "mae_jersey_rgb": 55.642250061035156,
+  "mae_subject_luma": 31.34486961364746,
+  "mae_jersey_luma": 52.085994720458984,
+  "mae_jersey_red_channel": 73.718017578125,
+  "edge_overlap_subject": 0.005951926745516979,
+  "edge_overlap_face": 0.00877343884397041,
+  "red_mask_iou": 0.5684011100437614,
+  "subject_coverage": 0.45677372685185186,
+  "jersey_coverage": 0.10014853395061728,
+  "warnings": [
+    "subject_coverage > 0.35: subject mask may be overfilled",
+    "mae_jersey_rgb > 45: jersey/color distribution is still poor"
+  ]
+}
