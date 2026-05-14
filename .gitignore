@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .mypy_cache/
+reference_img/goku*.jpg
 examples/outputs/*.png
 !examples/outputs/demo_*.png
 !examples/previews/demo_*.png
