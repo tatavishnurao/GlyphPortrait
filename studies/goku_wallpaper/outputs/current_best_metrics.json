@@ -1,0 +1,23 @@
+{
+  "mae_full_rgb": 9.447381973266602,
+  "mae_subject_rgb": 36.76936721801758,
+  "mae_hair_rgb": 4.176867485046387,
+  "mae_skin_rgb": 73.0727767944336,
+  "mae_gi_rgb": 48.00950622558594,
+  "mae_undershirt_rgb": 5.464092254638672,
+  "edge_overlap_subject": 0.9366958529237873,
+  "hair_mask_iou": 0.41255408980221087,
+  "orange_mask_iou": 0.3109445470342738,
+  "blue_mask_iou": 0.5139957556285345,
+  "floating_fragment_count": 0,
+  "render_time_seconds": 6.199,
+  "output_resolution": [
+    1920,
+    1200
+  ],
+  "subject_coverage": 0.25693619791666666,
+  "subject_pixels": 591981,
+  "anchor_words": 9,
+  "contour_lane_words": 77,
+  "texture_words": 2959
+}
