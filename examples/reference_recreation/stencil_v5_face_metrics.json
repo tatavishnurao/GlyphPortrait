@@ -1,0 +1,22 @@
+{
+  "face_luma_mae": 22.98228645324707,
+  "edge_overlap_face": 0.19814241486068113,
+  "protected_dark_zone_fill_ratio": 0.0543638689363377,
+  "gray_slab_penalty": 0.0,
+  "mouth_banding_penalty": 0.07319870833997373,
+  "manual_anchor_words": 11,
+  "contour_lane_words": 870,
+  "too_dark_recovery_words": 120,
+  "floating_fragment_count": 9,
+  "face_too_dark_pixel_ratio": 0.06866579250241922,
+  "face_detail_words": 745,
+  "edge_ring_words": 674,
+  "render_time_seconds": 15.022,
+  "seed": 20260518,
+  "crop_box": [
+    1248,
+    91,
+    1920,
+    824
+  ]
+}
