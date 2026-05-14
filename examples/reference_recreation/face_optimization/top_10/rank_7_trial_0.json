@@ -1,0 +1,37 @@
+{
+  "rank": 7,
+  "trial": 0,
+  "score": -3.7170048759588354,
+  "params": {
+    "anchor_size_scale": 0.6973709203936791,
+    "anchor_alpha_scale": 0.7977422862000487,
+    "lane_word_spacing": 13.837413015764714,
+    "lane_word_count_multiplier": 1.8609100597470016,
+    "contour_alpha_min": 125,
+    "contour_alpha_max": 215,
+    "tone_alpha_min": 102,
+    "tone_alpha_max": 179,
+    "shadow_alpha_min": 39,
+    "shadow_alpha_max": 91,
+    "dark_zone_suppression": 0.6523131048569095,
+    "luma_modulation_strength": 0.4406244727909234,
+    "cheek_lane_multiplier": 2.427363193201222,
+    "nose_lane_multiplier": 1.2167631935425332,
+    "jitter_strength": 4.428149382807203,
+    "structure_layer_opacity": 0.8562602927725961
+  },
+  "metrics": {
+    "face_luma_mae": 33.73877716064453,
+    "edge_overlap_face": 0.23319395303956256,
+    "protected_dark_zone_fill_ratio": 0.13303189341945904,
+    "cheek_edge_overlap": 0.130779392338177,
+    "nose_bridge_edge_overlap": 0.1423290203327172,
+    "lower_face_brightness_penalty": 0.2644448416573661,
+    "anchor_dominance_penalty": 0.02065905599472577,
+    "mouth_banding_penalty": 1.1935893746541228,
+    "lane_clutter_penalty": 1.8164665413533454,
+    "lane_words": 328,
+    "average_alpha": 110.98748370273795,
+    "total_words_drawn": 3835
+  }
+}

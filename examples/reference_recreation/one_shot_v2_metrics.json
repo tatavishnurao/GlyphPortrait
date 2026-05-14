@@ -1,0 +1,23 @@
+{
+  "target_path": "/home/vishnu-rao/Desktop/Arjun/projects/GlyphPortrait/reference_img/Michael-Jordan-Wallpaper-Desktop-1.jpg",
+  "total_words_drawn": 16795,
+  "shadow_words": 7075,
+  "tone_words": 1726,
+  "face_texture_words": 1511,
+  "contour_words": 5406,
+  "jersey_words": 1072,
+  "jersey_anchor_grain_words": 388,
+  "anchor_words": 5,
+  "shape_mask_coverage": 0.22465,
+  "jersey_mask_coverage": 0.1047,
+  "face_mask_coverage": 0.09719,
+  "average_alpha": 115.45,
+  "render_time": 12.707,
+  "edge_pixels_sampled": 7600,
+  "seed": 2301,
+  "subject_shift_x": -60,
+  "output_resolution": [
+    1920,
+    1080
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "target_path": "/home/vishnu-rao/Desktop/Arjun/projects/GlyphPortrait/examples/reference_recreation/side_by_side_final.png",
+  "total_words_drawn": 10340,
+  "face_words_drawn": 8609,
+  "jersey_words_drawn": 1731,
+  "shape_mask_coverage": 0.1632,
+  "jersey_mask_coverage": 0.0248,
+  "average_placement_probability": 0.6146,
+  "render_time_ms": 2883.56,
+  "seed": 23,
+  "output_resolution": "1920x1080"
+}

@@ -1,0 +1,40 @@
+{
+  "rank": 1,
+  "trial": 19,
+  "score": -4.813574359537414,
+  "params": {
+    "anchor_size_scale": 0.639704651267142,
+    "anchor_alpha_scale": 0.744976298829721,
+    "lane_word_spacing": 11.563284504428202,
+    "lane_word_count_multiplier": 1.4340488338454684,
+    "contour_alpha_min": 154,
+    "contour_alpha_max": 214,
+    "tone_alpha_min": 83,
+    "tone_alpha_max": 180,
+    "shadow_alpha_min": 40,
+    "shadow_alpha_max": 81,
+    "dark_zone_suppression": 0.47448468444472464,
+    "luma_modulation_strength": 0.416908967980559,
+    "cheek_lane_multiplier": 1.8135314362216302,
+    "nose_lane_multiplier": 1.0371890129350148,
+    "jitter_strength": 2.248456635428785,
+    "structure_layer_opacity": 0.8965443518606857
+  },
+  "metrics": {
+    "face_luma_mae": 35.75670623779297,
+    "edge_overlap_face": 0.24656638325703073,
+    "protected_dark_zone_fill_ratio": 0.09059345983044005,
+    "cheek_edge_overlap": 0.14247669773635152,
+    "nose_bridge_edge_overlap": 0.14575645756457564,
+    "lower_face_brightness_penalty": 0.3491307394845145,
+    "gray_slab_penalty": 0.3439511697283718,
+    "anchor_dominance_penalty": 0.0,
+    "mouth_banding_penalty": 1.0,
+    "lane_clutter_penalty": 1.0767128676539186,
+    "lane_words": 217,
+    "average_alpha": 98.45181043663472,
+    "total_words_drawn": 3756,
+    "eligible": false,
+    "failed_gates": "gray_slab_penalty,mouth_banding_penalty"
+  }
+}

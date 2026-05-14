@@ -1,0 +1,26 @@
+{
+  "mae_full_rgb": 15.231414794921875,
+  "mae_subject_rgb": 31.031843185424805,
+  "mae_face_rgb": 28.058263778686523,
+  "mae_jersey_rgb": 28.047147750854492,
+  "face_luma_mae": 27.9498233795166,
+  "jersey_luma_mae": 26.745195388793945,
+  "mae_jersey_red_channel": 38.661502838134766,
+  "edge_overlap_face": 0.1426183844011142,
+  "red_mask_iou": 0.8750701996221983,
+  "gray_slab_penalty": 0.0,
+  "mouth_banding_penalty": 0.07463348088441071,
+  "protected_dark_zone_fill_ratio": 0.038841877398405986,
+  "subject_coverage": 0.21177324459876543,
+  "jersey_coverage": 0.10347318672839506,
+  "output_resolution": [
+    1920,
+    1080
+  ],
+  "seed": 20260516,
+  "edge_ring_words": 691,
+  "cheek_recovery_words": 49,
+  "neck_recovery_words": 56,
+  "face_detail_words": 796,
+  "render_time_seconds": 10.183
+}
