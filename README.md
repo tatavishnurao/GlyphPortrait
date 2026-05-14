@@ -1,71 +1,53 @@
-# GlyphForge
+# GlyphPortrait
 
-GlyphForge is a local-first typographic portrait generator with optional GPU
-hooks/metrics for segmentation and future stylization work.
+Typographic portrait generator. Turns a portrait into poster/wallpaper
+artwork built from real, readable words placed inside the subject silhouette.
 
-It turns a portrait into export-quality poster or wallpaper artwork built from
-real, readable words placed inside a subject silhouette.
+Pipeline: mask subject -> build importance map -> place words with
+collision-aware layout -> render themed PNG.
 
-## Why this project
-- Python-first CV + rendering pipeline (not a thin image-gen wrapper)
-- Real text placement with mask-awareness and collision control
-- Local Gradio app with deterministic seed and high-res PNG export
+## Aim
 
-## Code Organization
-- `glyphforge/` is the reusable core engine (image processing, typography layout, rendering).
-- `studies/jordan_wallpaper/` is the intentionally overfit reference-recreation study.
-- `scripts/recreate_reference_wallpaper.py` is a thin wrapper around the study pipeline.
-- `experiments/` documents failures, tradeoffs, and iteration notes.
+Reconstruct a recognizable portrait using nothing but typography, where
+every placed word remains legible and the overall silhouette,
+luminance, and edge structure match the reference.
 
-## Demo Gallery
+## Core Engine
 
-### Monochrome Dark
-![Monochrome Demo](examples/outputs/demo_monochrome.png)
+- `glyphforge/` — reusable pipeline: segmentation, importance map, word
+  placement layout engine, theme rendering.
+- Gradio app (`app.py`), CLI (`cli.py`), export presets (`1:1`, `4:5`,
+  `16:9`, `9:16`).
 
-### Sports Red/Black
-![Sports Red Black Demo](examples/outputs/demo_sports_red_black.png)
+## Studies
 
-### Gold/Black Tribute
-![Gold Tribute Demo](examples/outputs/demo_gold_tribute.png)
+### `studies/jordan_wallpaper/`
 
-### Segmentation/Mask Preview
-![Mask Preview](examples/previews/demo_mask.png)
+Reference-stencil reconstruction of a Michael Jordan wallpaper.
 
-## MVP features
-- Upload portrait
-- Parse words (comma/newline separated)
-- Live stage previews in Gradio:
-  - preprocessed portrait
-  - subject mask
-  - final typographic output
-  - metrics JSON
-- Theme selection:
-  - monochrome dark
-  - minimal grayscale
-  - sports red/black
-  - gold/black tribute
-- Mask generation with fallback if segmentation model is unavailable
-- Typography layout engine:
-  - weighted word priority
-  - varied font sizes
-  - occupancy-grid collision avoidance
-  - grayscale/edge-guided placement bias
-  - deterministic seed option
-- Export presets: `1:1`, `4:5`, `16:9`, `9:16`
+Strategy: use the reference itself as a dual stencil. The reference
+luminance map and edge map guide every word placement. Text passes are
+split by region (face, jersey), each with region-specific word sets and
+luminance-driven color picking. Art-directed anchors are placed at fixed
+facial coordinates to recover key structural lines (brow, jaw, cheek).
+A composited right-aligned subject canvas matches the original wallpaper
+composition.
 
-## Architecture
-Pipeline summary:
-1. Preprocess portrait to target ratio and resolution.
-2. Generate subject mask with segmentation fallback chain.
-3. Build importance map from mask + grayscale darkness + edge strength.
-4. Parse and weight words by priority.
-5. Place text using importance-guided sampling and occupancy-grid collision checks.
-6. Render themed output and export PNG.
+### `studies/goku_wallpaper/`
 
-See [docs/algorithm.md](docs/algorithm.md) for the full algorithm details.
+Reference-stencil reconstruction of a Goku portrait for black-background
+tribute posters.
 
-## Local Setup (`uv`)
-Create a dedicated environment named `inferenceimg`:
+Strategy: multi-mask region decomposition. A JSON profile defines
+semantic regions (hair, skin, neck, orange gi, blue undershirt,
+outline/shadow) with region-specific word sets. Anchors are placed at
+exact normalized coordinates with per-word angle and alpha. Lanes
+place words along curved paths following anatomical contours (hair
+spikes, brow line, jawline, collar curve, gi folds, shoulder curve).
+The subject is composited over a black tribute-poster background with
+a rim visibility pass.
+
+## Local Setup
 
 ```bash
 uv venv inferenceimg
@@ -73,40 +55,17 @@ source inferenceimg/bin/activate
 uv pip install -r requirements.txt
 ```
 
-## Run Gradio
+## Run
 
 ```bash
-python app.py
+python app.py          # Gradio UI
+python cli.py ...      # CLI
+pytest -q              # tests
 ```
 
-Gradio output panels include:
-- preprocessed portrait preview
-- subject mask preview
-- final typographic output
-- metrics JSON
+## Docs
 
-## Run CLI
-
-```bash
-python cli.py \
-  --input reference_img/Michael-Jordan-Wallpaper-Desktop-1.jpg \
-  --words "MVP, Champion, Leader, Legacy, Focus, Discipline" \
-  --theme sports_red_black \
-  --ratio 16:9 \
-  --output examples/outputs/sample.png
-```
-
-## Test
-
-```bash
-pytest -q
-```
-
-## Limitations
-Current constraints are documented in [docs/limitations.md](docs/limitations.md).
-
-## GPU Roadmap
-Planned GPU evolution is documented in [docs/gpu-roadmap.md](docs/gpu-roadmap.md).
-
-## Roadmap
-General roadmap: [docs/roadmap.md](docs/roadmap.md)
+- [docs/algorithm.md](docs/algorithm.md)
+- [docs/limitations.md](docs/limitations.md)
+- [docs/gpu-roadmap.md](docs/gpu-roadmap.md)
+- [docs/roadmap.md](docs/roadmap.md)
