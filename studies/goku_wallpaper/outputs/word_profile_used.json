@@ -1,0 +1,436 @@
+{
+  "subject": "Goku",
+  "seed": 20260514,
+  "background": "black",
+  "foreground_hint": {
+    "min_x_norm": 0.44,
+    "dark_max_y_norm": 0.67,
+    "dark_soft_max_y_norm": 0.63,
+    "component_x_bias": 0.7
+  },
+  "words": {
+    "hair": [
+      "GOKU",
+      "SON GOKU",
+      "KAKAROT",
+      "SAIYAN",
+      "SUPER SAIYAN",
+      "LIMIT BREAKER",
+      "ULTRA INSTINCT",
+      "POWER",
+      "LEGEND"
+    ],
+    "skin": [
+      "PURE HEART",
+      "KINDNESS",
+      "HOPE",
+      "DETERMINATION",
+      "COURAGE",
+      "RESOLVE",
+      "FAMILY",
+      "PROTECTOR"
+    ],
+    "neck": [
+      "TRAINING",
+      "STRENGTH",
+      "DISCIPLINE",
+      "BATTLE",
+      "Z FIGHTER",
+      "RESOLVE"
+    ],
+    "orange_gi": [
+      "WARRIOR",
+      "KAMEHAMEHA",
+      "EARTH'S DEFENDER",
+      "PROTECTOR",
+      "ADVENTURE",
+      "DRAGON BALLS",
+      "BATTLE"
+    ],
+    "blue_undershirt": [
+      "TRAINING",
+      "STRENGTH",
+      "SPIRIT BOMB",
+      "KAIOKEN",
+      "RESOLVE",
+      "DISCIPLINE"
+    ],
+    "outline": [
+      "KAKAROT",
+      "SAIYAN",
+      "BATTLE",
+      "POWER",
+      "LEGEND"
+    ]
+  },
+  "anchors": [
+    {
+      "text": "GOKU",
+      "region": "hair",
+      "pos": [
+        0.735,
+        0.272
+      ],
+      "size": 76,
+      "angle": -14,
+      "alpha": 220,
+      "bold": true
+    },
+    {
+      "text": "SON GOKU",
+      "region": "hair",
+      "pos": [
+        0.678,
+        0.21
+      ],
+      "size": 36,
+      "angle": 14,
+      "alpha": 205,
+      "bold": true
+    },
+    {
+      "text": "KAKAROT",
+      "region": "hair",
+      "pos": [
+        0.817,
+        0.312
+      ],
+      "size": 34,
+      "angle": 24,
+      "alpha": 210,
+      "bold": true
+    },
+    {
+      "text": "PURE HEART",
+      "region": "skin",
+      "pos": [
+        0.748,
+        0.5
+      ],
+      "size": 31,
+      "angle": -12,
+      "alpha": 205,
+      "bold": true
+    },
+    {
+      "text": "DETERMINATION",
+      "region": "skin",
+      "pos": [
+        0.744,
+        0.692
+      ],
+      "size": 27,
+      "angle": 78,
+      "alpha": 195,
+      "bold": true
+    },
+    {
+      "text": "KAMEHAMEHA",
+      "region": "orange_gi",
+      "pos": [
+        0.79,
+        0.836
+      ],
+      "size": 42,
+      "angle": -12,
+      "alpha": 215,
+      "bold": true
+    },
+    {
+      "text": "WARRIOR",
+      "region": "orange_gi",
+      "pos": [
+        0.865,
+        0.815
+      ],
+      "size": 39,
+      "angle": 17,
+      "alpha": 212,
+      "bold": true
+    },
+    {
+      "text": "TRAINING",
+      "region": "blue_undershirt",
+      "pos": [
+        0.714,
+        0.842
+      ],
+      "size": 31,
+      "angle": 11,
+      "alpha": 205,
+      "bold": true
+    },
+    {
+      "text": "EARTH'S DEFENDER",
+      "region": "orange_gi",
+      "pos": [
+        0.818,
+        0.925
+      ],
+      "size": 29,
+      "angle": -6,
+      "alpha": 205,
+      "bold": true
+    }
+  ],
+  "lanes": [
+    {
+      "id": "hair_spike_top",
+      "region": "hair",
+      "points": [
+        [
+          0.555,
+          0.21
+        ],
+        [
+          0.665,
+          0.145
+        ],
+        [
+          0.755,
+          0.235
+        ]
+      ],
+      "words": "hair",
+      "spacing": 56,
+      "size": 18,
+      "alpha": 188
+    },
+    {
+      "id": "hair_spike_left",
+      "region": "hair",
+      "points": [
+        [
+          0.532,
+          0.5
+        ],
+        [
+          0.63,
+          0.4
+        ],
+        [
+          0.72,
+          0.43
+        ]
+      ],
+      "words": "hair",
+      "spacing": 49,
+      "size": 17,
+      "alpha": 182
+    },
+    {
+      "id": "hair_spike_right",
+      "region": "hair",
+      "points": [
+        [
+          0.788,
+          0.455
+        ],
+        [
+          0.9,
+          0.38
+        ],
+        [
+          0.986,
+          0.415
+        ]
+      ],
+      "words": "hair",
+      "spacing": 52,
+      "size": 18,
+      "alpha": 190
+    },
+    {
+      "id": "brow_line",
+      "region": "outline",
+      "points": [
+        [
+          0.69,
+          0.455
+        ],
+        [
+          0.743,
+          0.468
+        ],
+        [
+          0.8,
+          0.448
+        ]
+      ],
+      "words": [
+        "FOCUS",
+        "SAIYAN",
+        "RESOLVE"
+      ],
+      "spacing": 34,
+      "size": 13,
+      "alpha": 205
+    },
+    {
+      "id": "cheek_line",
+      "region": "skin",
+      "points": [
+        [
+          0.703,
+          0.544
+        ],
+        [
+          0.751,
+          0.566
+        ],
+        [
+          0.816,
+          0.538
+        ]
+      ],
+      "words": "skin",
+      "spacing": 38,
+      "size": 14,
+      "alpha": 170
+    },
+    {
+      "id": "jawline",
+      "region": "skin",
+      "points": [
+        [
+          0.688,
+          0.578
+        ],
+        [
+          0.718,
+          0.666
+        ],
+        [
+          0.775,
+          0.69
+        ],
+        [
+          0.832,
+          0.625
+        ]
+      ],
+      "words": [
+        "COURAGE",
+        "RESOLVE",
+        "PROTECTOR"
+      ],
+      "spacing": 36,
+      "size": 14,
+      "alpha": 180
+    },
+    {
+      "id": "neck_column",
+      "region": "skin",
+      "points": [
+        [
+          0.732,
+          0.655
+        ],
+        [
+          0.737,
+          0.765
+        ],
+        [
+          0.765,
+          0.85
+        ]
+      ],
+      "words": "neck",
+      "spacing": 37,
+      "size": 15,
+      "alpha": 178
+    },
+    {
+      "id": "collar_curve",
+      "region": "blue_undershirt",
+      "points": [
+        [
+          0.624,
+          0.792
+        ],
+        [
+          0.708,
+          0.765
+        ],
+        [
+          0.812,
+          0.773
+        ]
+      ],
+      "words": "blue_undershirt",
+      "spacing": 43,
+      "size": 17,
+      "alpha": 190
+    },
+    {
+      "id": "gi_fold_left",
+      "region": "orange_gi",
+      "points": [
+        [
+          0.548,
+          0.85
+        ],
+        [
+          0.566,
+          0.95
+        ],
+        [
+          0.585,
+          0.995
+        ]
+      ],
+      "words": "orange_gi",
+      "spacing": 43,
+      "size": 17,
+      "alpha": 184
+    },
+    {
+      "id": "gi_fold_right",
+      "region": "orange_gi",
+      "points": [
+        [
+          0.857,
+          0.79
+        ],
+        [
+          0.895,
+          0.91
+        ],
+        [
+          0.913,
+          0.99
+        ]
+      ],
+      "words": "orange_gi",
+      "spacing": 45,
+      "size": 17,
+      "alpha": 186
+    },
+    {
+      "id": "shoulder_curve",
+      "region": "orange_gi",
+      "points": [
+        [
+          0.744,
+          0.865
+        ],
+        [
+          0.85,
+          0.792
+        ],
+        [
+          0.975,
+          0.862
+        ]
+      ],
+      "words": [
+        "WARRIOR",
+        "KAMEHAMEHA",
+        "DRAGON BALLS"
+      ],
+      "spacing": 50,
+      "size": 18,
+      "alpha": 192
+    }
+  ]
+}
