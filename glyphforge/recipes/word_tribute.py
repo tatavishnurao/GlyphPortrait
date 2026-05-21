@@ -98,6 +98,7 @@ def load_profile(path: Path | None, subject: str | None, extra_words: list[str])
     profile.setdefault("lanes", [])
     profile.setdefault("foreground_hint", {})
     profile["background"] = profile.get("background", "black")
+    profile.setdefault("reconstruction_strength", "hard" if profile["background"] == "black" else "soft")
     if subject:
         profile["subject"] = subject
     if extra_words:
@@ -126,8 +127,10 @@ def render_from_paths(
     profile = load_profile(profile_path, subject, extra_words or [])
     if background == "black":
         profile["background"] = "black"
+        profile["reconstruction_strength"] = "hard"
     elif background == "preserve":
         profile["background"] = "preserve"
+        profile["reconstruction_strength"] = profile.get("reconstruction_strength", "soft")
     subject_override = load_mask(mask_path, ref.shape[:2]) if mask_path else None
     metrics = render_word_tribute(ref, profile, out_dir, subject_override)
     (out_dir / "word_profile_used.json").write_text(json.dumps(profile, indent=2) + "\n", encoding="utf-8")
@@ -371,31 +374,48 @@ def local_tangent(edge: np.ndarray, x: int, y: int, rng: random.Random) -> float
     return math.degrees(math.atan2(float(gx.mean()), -float(gy.mean()))) + rng.uniform(-9, 9)
 
 
+def local_luma(arr: np.ndarray, x: int, y: int) -> float:
+    return float(luma(arr[y : y + 1, x : x + 1])[0, 0])
+
+
 def region_color(ref: np.ndarray, maps: dict[str, np.ndarray], region: str, x: int, y: int, rng: random.Random) -> tuple[int, int, int]:
     edge = float(maps["edge_strength"][y, x])
-    base = ref[y, x]
+    base = ref[y, x].astype(np.float32)
+    lum = local_luma(ref, x, y)
     if region == "hair":
-        if rng.random() < 0.34 or edge > 0.18:
-            value = int(np.clip(82 + edge * 126 + rng.randrange(-18, 24), 46, 220))
-            return value, value + 2, min(255, value + 14)
-        value = rng.randrange(8, 45)
-        return value, value, min(56, value + 8)
+        if edge > 0.24 or lum > 92 or rng.random() < 0.28:
+            value = int(np.clip(126 + edge * 112 + rng.randrange(-24, 28), 82, 235))
+            return value, value + 4, min(255, value + 20)
+        value = int(np.clip(28 + edge * 40 + rng.randrange(-10, 10), 18, 92))
+        return value, value, min(120, value + 12)
     if region == "skin":
-        if rng.random() < 0.45:
-            return 92, 46, 30
+        if lum > 198:
+            return random_choice(rng, [(255, 247, 235), (255, 238, 214), (249, 231, 205)])
+        if lum > 148:
+            return random_choice(rng, [(255, 214, 180), (246, 198, 158), (232, 176, 140), (214, 160, 122)])
+        if rng.random() < 0.36:
+            return random_choice(rng, [(140, 82, 58), (124, 72, 51), (106, 66, 48)])
         return (
-            int(np.clip(base[0] * 1.12 + 18, 120, 255)),
-            int(np.clip(base[1] * 1.06 + 12, 92, 235)),
-            int(np.clip(base[2] * 0.92 + 8, 58, 205)),
+            int(np.clip(base[0] * 1.06 + 10, 122, 255)),
+            int(np.clip(base[1] * 0.98 + 8, 90, 236)),
+            int(np.clip(base[2] * 0.92 + 5, 62, 205)),
         )
     if region == "orange_gi":
-        return random_choice(rng, [(245, 78, 24), (204, 43, 20), (255, 162, 42), (118, 24, 16), (255, 210, 128)])
+        if lum > 188:
+            return random_choice(rng, [(255, 230, 142), (255, 206, 96), (255, 184, 82)])
+        if lum < 118:
+            return random_choice(rng, [(150, 24, 18), (166, 34, 22), (122, 24, 18)])
+        return random_choice(rng, [(255, 90, 28), (236, 72, 26), (214, 52, 24), (255, 128, 40)])
     if region == "blue_undershirt":
-        return random_choice(rng, [(20, 18, 75), (35, 38, 126), (70, 74, 180), (185, 198, 255), (12, 12, 42)])
+        if lum > 128 or edge > 0.18:
+            return random_choice(rng, [(176, 192, 255), (142, 164, 248), (106, 122, 230)])
+        if lum < 72:
+            return random_choice(rng, [(10, 10, 34), (18, 18, 58), (24, 30, 78)])
+        return random_choice(rng, [(36, 38, 112), (44, 52, 140), (64, 74, 178)])
     if region == "outline":
-        value = rng.randrange(0, 34)
-        return value, value, min(48, value + 6)
-    value = int(np.clip(luma(ref[y : y + 1, x : x + 1])[0, 0] + 28, 40, 245))
+        value = int(np.clip(70 + edge * 140 + rng.randrange(-14, 18), 42, 235))
+        return value, value, min(255, value + 12)
+    value = int(np.clip(lum + 28, 40, 245))
     return value, value, value
 
 
@@ -427,6 +447,20 @@ def render_region_texture(
             angle = rng.uniform(-25, 25)
         draw_text(layer, x, y, word, size, region_color(ref, maps, region, x, y, rng), alpha, angle, size >= 20)
     return clip_layer(layer, maps[region])
+
+
+def layer_alpha_mask(layer: Image.Image, threshold: int = 24) -> np.ndarray:
+    alpha = np.array(layer, dtype=np.uint8)[..., 3]
+    return alpha >= threshold
+
+
+def combine_alpha_masks(layers: list[Image.Image], threshold: int = 24) -> np.ndarray:
+    if not layers:
+        raise ValueError("combine_alpha_masks requires at least one layer")
+    mask = np.zeros((layers[0].height, layers[0].width), dtype=bool)
+    for layer in layers:
+        mask |= layer_alpha_mask(layer, threshold)
+    return mask
 
 
 def interpolate_lane(points: list[list[float]], width: int, height: int, spacing: float) -> list[tuple[float, float, float]]:
@@ -486,18 +520,33 @@ def render_lanes(ref: np.ndarray, maps: dict[str, np.ndarray], profile: dict[str
         if len(points_px) > 1:
             draw_overlay.line(points_px, fill=(0, 255, 255, 165), width=3)
         region_mask = maps["subject"] if region == "outline" else maps[region]
-        for idx, (x, y, angle) in enumerate(samples):
-            ix, iy = int(round(x)), int(round(y))
-            if ix < 0 or ix >= w or iy < 0 or iy >= h:
-                continue
-            if not bool(region_mask[iy, ix]):
-                near = nearest_allowed(ix, iy, region_mask, 22)
-                if near is None:
+        for pass_index in range(2):
+            pass_spacing = max(18.0, float(lane["spacing"]) * (0.86 if pass_index else 1.0))
+            pass_samples = interpolate_lane(lane["points"], w, h, pass_spacing)
+            for idx, (x, y, angle) in enumerate(pass_samples):
+                ix, iy = int(round(x)), int(round(y))
+                if ix < 0 or ix >= w or iy < 0 or iy >= h:
                     continue
-                ix, iy = near
-            word = words[idx % len(words)]
-            draw_text(layer, ix, iy, word, int(lane["size"]), region_color(ref, maps, region, ix, iy, rng), int(lane["alpha"]), angle + rng.uniform(-5, 5))
-            placed += 1
+                if not bool(region_mask[iy, ix]):
+                    near = nearest_allowed(ix, iy, region_mask, 22)
+                    if near is None:
+                        continue
+                    ix, iy = near
+                word = words[(idx + pass_index) % len(words)]
+                size = int(lane["size"]) + (1 if pass_index else 0)
+                alpha = int(np.clip(int(lane["alpha"]) + pass_index * 16 + maps["edge_strength"][iy, ix] * 42, 96, 240))
+                draw_text(
+                    layer,
+                    ix + rng.randint(-2, 2),
+                    iy + rng.randint(-2, 2),
+                    word,
+                    size,
+                    region_color(ref, maps, region, ix, iy, rng),
+                    alpha,
+                    angle + rng.uniform(-5, 5),
+                    size >= 16,
+                )
+                placed += 1
     return clip_layer(layer, maps["subject"]), overlay, placed
 
 
@@ -518,15 +567,23 @@ def render_anchors(ref: np.ndarray, maps: dict[str, np.ndarray], profile: dict[s
         color = region_color(ref, maps, region, px, py, rng)
         if region == "hair":
             color = tuple(max(c, 118) for c in color)
-        draw_text(layer, px, py, str(anchor["text"]), int(anchor["size"]), color, int(anchor["alpha"]), float(anchor["angle"]), bool(anchor.get("bold", False)))
+        alpha = int(np.clip(int(anchor["alpha"]) + maps["edge_strength"][py, px] * 48, 120, 245))
+        draw_text(layer, px, py, str(anchor["text"]), int(anchor["size"]), color, alpha, float(anchor["angle"]), bool(anchor.get("bold", False)))
         draw_overlay.ellipse((px - 8, py - 8, px + 8, py + 8), fill=(255, 230, 0, 210))
         draw_overlay.text((px + 10, py - 10), str(anchor["text"]), font=font(18, True), fill=(255, 255, 255, 225))
         placed += 1
     return clip_layer(layer, maps["subject"]), overlay, placed
 
 
-def subject_base(ref: np.ndarray, maps: dict[str, np.ndarray], background: str) -> np.ndarray:
+def subject_base(
+    ref: np.ndarray,
+    maps: dict[str, np.ndarray],
+    background: str,
+    reconstruction_strength: str,
+) -> np.ndarray:
     base = np.zeros_like(ref) if background == "black" else ref.copy()
+    if background == "black" and reconstruction_strength == "hard":
+        return base
     subject = maps["subject"]
     recon = np.zeros_like(ref)
     recon[subject] = ref[subject] * 0.24 + 10
@@ -540,14 +597,39 @@ def subject_base(ref: np.ndarray, maps: dict[str, np.ndarray], background: str) 
     return np.clip(base * (1.0 - alpha[..., None]) + recon * alpha[..., None], 0, 255)
 
 
-def composite_layers(ref: np.ndarray, maps: dict[str, np.ndarray], layers: list[Image.Image], background: str) -> np.ndarray:
-    out = subject_base(ref, maps, background)
+def build_edge_overlay(ref: np.ndarray, maps: dict[str, np.ndarray], background: str) -> tuple[Image.Image, np.ndarray]:
+    h, w = ref.shape[:2]
+    layer = np.zeros((h, w, 4), dtype=np.uint8)
+    edge = maps["edge_strength"]
+    subject = maps["subject"]
+    if background == "black":
+        hair_rim = maps["hair"] & (edge > 0.22)
+        facial_lines = maps["skin"] & (edge > 0.18)
+        cloth_lines = (maps["orange_gi"] | maps["blue_undershirt"]) & (edge > 0.16)
+        thin = hair_rim | facial_lines | cloth_lines | (maps["outline"] & (edge > 0.11))
+        thin = ndi.binary_dilation(thin, structure=np.ones((3, 3), dtype=bool), iterations=1) & subject
+        lum = np.clip(luma(ref), 0.0, 255.0)
+        layer[thin, 0] = np.clip(lum[thin] * 0.82 + 22, 56, 255).astype(np.uint8)
+        layer[thin, 1] = np.clip(lum[thin] * 0.82 + 22, 56, 255).astype(np.uint8)
+        layer[thin, 2] = np.clip(lum[thin] * 0.86 + 28, 64, 255).astype(np.uint8)
+        layer[thin, 3] = np.clip(86 + edge[thin] * 138, 86, 190).astype(np.uint8)
+    return Image.fromarray(layer, "RGBA"), layer[..., 3] > 0
+
+
+def composite_layers(
+    ref: np.ndarray,
+    maps: dict[str, np.ndarray],
+    layers: list[Image.Image],
+    background: str,
+    reconstruction_strength: str,
+) -> tuple[np.ndarray, np.ndarray]:
+    out = subject_base(ref, maps, background, reconstruction_strength)
     canvas = Image.fromarray(out.astype(np.uint8), "RGB").convert("RGBA")
     for layer in layers:
         canvas = Image.alpha_composite(canvas, layer)
     arr = np.array(canvas.convert("RGB"), dtype=np.float32)
-    outline = maps["outline"]
-    arr[outline] = arr[outline] * 0.28 + ref[outline] * 0.72
+    edge_overlay, edge_mask = build_edge_overlay(ref, maps, background)
+    arr = np.array(Image.alpha_composite(Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB").convert("RGBA"), edge_overlay).convert("RGB"), dtype=np.float32)
     if background == "preserve":
         arr[~maps["subject"]] = ref[~maps["subject"]]
     else:
@@ -555,7 +637,7 @@ def composite_layers(ref: np.ndarray, maps: dict[str, np.ndarray], layers: list[
         rim = ndi.binary_dilation(maps["subject"], structure=np.ones((5, 5), dtype=bool), iterations=1) & ~maps["subject"]
         edge = maps["edge_strength"]
         arr[rim] = np.maximum(arr[rim], np.clip(edge[rim, None] * 95.0, 0, 95))
-    return np.clip(arr, 0, 255)
+    return np.clip(arr, 0, 255), edge_mask
 
 
 def save_mask(mask: np.ndarray, path: Path) -> None:
@@ -650,7 +732,37 @@ def floating_fragment_count(rec: np.ndarray, subject: np.ndarray) -> int:
     return fragments
 
 
-def compute_metrics(ref: np.ndarray, rec: np.ndarray, maps: dict[str, np.ndarray], render_time: float, background: str) -> dict[str, float | int | list[int] | str]:
+def text_coverage(mask: np.ndarray, text_mask: np.ndarray) -> float:
+    if not np.any(mask):
+        return 0.0
+    return float(np.logical_and(mask, text_mask).sum() / mask.sum())
+
+
+def source_pixel_leakage(
+    ref: np.ndarray,
+    rec: np.ndarray,
+    subject: np.ndarray,
+    support_mask: np.ndarray,
+) -> float:
+    uncovered = subject & ~support_mask & (luma(rec) > 18.0)
+    if not np.any(uncovered):
+        return 0.0
+    diff = np.abs(ref.astype(np.float32) - rec.astype(np.float32)).mean(axis=2)
+    similarity = 1.0 - np.clip(diff / 255.0, 0.0, 1.0)
+    weights = np.clip(similarity[uncovered] - 0.55, 0.0, 0.45) / 0.45
+    return float(np.mean(weights)) if weights.size else 0.0
+
+
+def compute_metrics(
+    ref: np.ndarray,
+    rec: np.ndarray,
+    maps: dict[str, np.ndarray],
+    text_mask: np.ndarray,
+    support_mask: np.ndarray,
+    render_time: float,
+    background: str,
+    reconstruction_strength: str,
+) -> dict[str, float | int | list[int] | str]:
     diff = np.abs(ref.astype(np.float32) - rec.astype(np.float32))
     subject = maps["subject"]
 
@@ -678,10 +790,17 @@ def compute_metrics(ref: np.ndarray, rec: np.ndarray, maps: dict[str, np.ndarray
         "blue_mask_iou": iou(maps["blue_undershirt"], blue_out),
         "floating_fragment_count": floating_fragment_count(rec, subject),
         "background_cleanliness": float(np.mean(bg_luma < 6.0)) if background == "black" else 0.0,
+        "source_pixel_leakage": source_pixel_leakage(ref, rec, subject, support_mask),
+        "text_coverage_subject": text_coverage(subject, text_mask),
+        "text_coverage_dark_region": text_coverage(maps["hair"], text_mask),
+        "text_coverage_warm_region": text_coverage(maps["skin"], text_mask),
+        "text_coverage_primary_color_region": text_coverage(maps["orange_gi"], text_mask),
+        "text_coverage_secondary_color_region": text_coverage(maps["blue_undershirt"], text_mask),
         "render_time_seconds": round(render_time, 3),
         "output_resolution": [int(ref.shape[1]), int(ref.shape[0])],
         "subject_coverage": float(subject.mean()),
         "background": background,
+        "reconstruction_strength": reconstruction_strength,
     }
 
 
@@ -710,36 +829,69 @@ def render_word_tribute(
     out_dir.mkdir(parents=True, exist_ok=True)
     rng = random.Random(int(profile.get("seed", 20260514)))
     background = str(profile.get("background", "black"))
+    reconstruction_strength = str(profile.get("reconstruction_strength", "hard" if background == "black" else "soft"))
     maps = build_masks(ref, profile, subject_override)
     words = profile["words"]
 
-    hair_count = max(260, int(maps["hair"].sum() / 520))
-    skin_count = max(240, int(maps["skin"].sum() / 470))
-    primary_count = max(420, int(maps["orange_gi"].sum() / 620))
-    secondary_count = max(240, int(maps["blue_undershirt"].sum() / 430))
-    outline_count = max(260, int(maps["outline"].sum() / 180))
-    light_count = max(140, int(maps["light_subject"].sum() / 900))
+    hard_black = background == "black" and reconstruction_strength == "hard"
+    hair_count = max(640 if hard_black else 260, int(maps["hair"].sum() / (180 if hard_black else 520)))
+    skin_count = max(760 if hard_black else 240, int(maps["skin"].sum() / (165 if hard_black else 470)))
+    primary_count = max(980 if hard_black else 420, int(maps["orange_gi"].sum() / (170 if hard_black else 620)))
+    secondary_count = max(540 if hard_black else 240, int(maps["blue_undershirt"].sum() / (150 if hard_black else 430)))
+    outline_count = max(520 if hard_black else 260, int(maps["outline"].sum() / (95 if hard_black else 180)))
+    light_count = max(380 if hard_black else 140, int(maps["light_subject"].sum() / (210 if hard_black else 900)))
 
-    hair_layer = render_region_texture(ref, maps, "hair", words["hair"], hair_count, (9, 27), (92, 226), rng)
-    skin_layer = render_region_texture(ref, maps, "skin", words["skin"] + words.get("neck", []), skin_count, (8, 20), (96, 214), rng)
-    primary_layer = render_region_texture(ref, maps, "orange_gi", words["orange_gi"], primary_count, (10, 26), (98, 222), rng)
-    secondary_layer = render_region_texture(ref, maps, "blue_undershirt", words["blue_undershirt"], secondary_count, (9, 22), (105, 225), rng)
-    outline_layer = render_region_texture(ref, maps, "outline", words["outline"], outline_count, (6, 14), (135, 240), rng)
-    light_layer = render_region_texture(ref, maps, "light_subject", words["skin"] + words["orange_gi"], light_count, (7, 15), (75, 170), rng)
+    text_layers = [
+        render_region_texture(ref, maps, "hair", words["hair"], hair_count, (10, 30), (130, 238), rng),
+        render_region_texture(ref, maps, "hair", words["hair"], max(320, hair_count // 2), (6, 12), (112, 216), rng),
+        render_region_texture(ref, maps, "skin", words["skin"] + words.get("neck", []), skin_count, (9, 22), (132, 228), rng),
+        render_region_texture(ref, maps, "skin", words["skin"] + words.get("neck", []), max(420, skin_count // 2), (5, 11), (104, 196), rng),
+        render_region_texture(ref, maps, "orange_gi", words["orange_gi"], primary_count, (11, 28), (138, 236), rng),
+        render_region_texture(ref, maps, "orange_gi", words["orange_gi"], max(520, primary_count // 2), (6, 12), (114, 208), rng),
+        render_region_texture(ref, maps, "blue_undershirt", words["blue_undershirt"], secondary_count, (10, 24), (136, 232), rng),
+        render_region_texture(ref, maps, "blue_undershirt", words["blue_undershirt"], max(260, secondary_count // 2), (5, 11), (112, 196), rng),
+        render_region_texture(ref, maps, "outline", words["outline"], outline_count, (6, 14), (142, 240), rng),
+        render_region_texture(ref, maps, "light_subject", words["skin"] + words["orange_gi"], light_count, (6, 13), (95, 184), rng),
+    ]
     lane_layer, lane_overlay, lane_words = render_lanes(ref, maps, profile, rng)
     anchor_layer, anchor_overlay, anchor_words = render_anchors(ref, maps, profile, rng)
+    text_layers.extend([lane_layer, anchor_layer])
 
-    rec = composite_layers(
+    rec, edge_mask = composite_layers(
         ref,
         maps,
-        [hair_layer, skin_layer, primary_layer, secondary_layer, light_layer, lane_layer, anchor_layer, outline_layer],
+        text_layers,
         background,
-    ).astype(np.uint8)
-    metrics = compute_metrics(ref, rec.astype(np.float32), maps, perf_counter() - start, background)
+        reconstruction_strength,
+    )
+    text_mask = combine_alpha_masks(text_layers, threshold=26)
+    support_mask = text_mask | edge_mask
+    rec = rec.astype(np.uint8)
+    metrics = compute_metrics(
+        ref,
+        rec.astype(np.float32),
+        maps,
+        text_mask,
+        support_mask,
+        perf_counter() - start,
+        background,
+        reconstruction_strength,
+    )
     metrics["subject_pixels"] = int(maps["subject"].sum())
     metrics["anchor_words"] = anchor_words
     metrics["contour_lane_words"] = lane_words
-    metrics["texture_words"] = hair_count + skin_count + primary_count + secondary_count + outline_count + light_count
+    metrics["texture_words"] = (
+        hair_count
+        + max(320, hair_count // 2)
+        + skin_count
+        + max(420, skin_count // 2)
+        + primary_count
+        + max(520, primary_count // 2)
+        + secondary_count
+        + max(260, secondary_count // 2)
+        + outline_count
+        + light_count
+    )
 
     Image.fromarray(rec, "RGB").save(out_dir / "current_best.png")
     side_by_side(ref, rec.astype(np.float32), background).save(out_dir / "current_best_side_by_side.png")

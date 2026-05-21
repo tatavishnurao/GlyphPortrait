@@ -64,15 +64,15 @@
     ]
   },
   "anchors": [
-    {"text": "GOKU", "region": "hair", "pos": [0.735, 0.272], "size": 76, "angle": -14, "alpha": 220, "bold": true},
-    {"text": "SON GOKU", "region": "hair", "pos": [0.678, 0.210], "size": 36, "angle": 14, "alpha": 205, "bold": true},
-    {"text": "KAKAROT", "region": "hair", "pos": [0.817, 0.312], "size": 34, "angle": 24, "alpha": 210, "bold": true},
-    {"text": "PURE HEART", "region": "skin", "pos": [0.748, 0.500], "size": 31, "angle": -12, "alpha": 205, "bold": true},
-    {"text": "DETERMINATION", "region": "skin", "pos": [0.744, 0.692], "size": 27, "angle": 78, "alpha": 195, "bold": true},
-    {"text": "KAMEHAMEHA", "region": "orange_gi", "pos": [0.790, 0.836], "size": 42, "angle": -12, "alpha": 215, "bold": true},
-    {"text": "WARRIOR", "region": "orange_gi", "pos": [0.865, 0.815], "size": 39, "angle": 17, "alpha": 212, "bold": true},
-    {"text": "TRAINING", "region": "blue_undershirt", "pos": [0.714, 0.842], "size": 31, "angle": 11, "alpha": 205, "bold": true},
-    {"text": "EARTH'S DEFENDER", "region": "orange_gi", "pos": [0.818, 0.925], "size": 29, "angle": -6, "alpha": 205, "bold": true}
+    {"text": "GOKU", "region": "hair", "pos": [0.735, 0.272], "size": 82, "angle": -14, "alpha": 232, "bold": true},
+    {"text": "SAIYAN", "region": "hair", "pos": [0.678, 0.210], "size": 40, "angle": 14, "alpha": 214, "bold": true},
+    {"text": "KAKAROT", "region": "hair", "pos": [0.817, 0.312], "size": 38, "angle": 24, "alpha": 220, "bold": true},
+    {"text": "PURE HEART", "region": "skin", "pos": [0.748, 0.500], "size": 35, "angle": -12, "alpha": 214, "bold": true},
+    {"text": "DETERMINATION", "region": "skin", "pos": [0.744, 0.692], "size": 30, "angle": 78, "alpha": 206, "bold": true},
+    {"text": "KAMEHAMEHA", "region": "orange_gi", "pos": [0.790, 0.836], "size": 46, "angle": -12, "alpha": 226, "bold": true},
+    {"text": "WARRIOR", "region": "orange_gi", "pos": [0.865, 0.815], "size": 42, "angle": 17, "alpha": 222, "bold": true},
+    {"text": "TRAINING", "region": "blue_undershirt", "pos": [0.714, 0.842], "size": 34, "angle": 11, "alpha": 214, "bold": true},
+    {"text": "EARTH'S DEFENDER", "region": "orange_gi", "pos": [0.818, 0.925], "size": 31, "angle": -6, "alpha": 214, "bold": true}
   ],
   "lanes": [
     {"id": "hair_spike_top", "region": "hair", "points": [[0.555, 0.210], [0.665, 0.145], [0.755, 0.235]], "words": "hair", "spacing": 56, "size": 18, "alpha": 188},
