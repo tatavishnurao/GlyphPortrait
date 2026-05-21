@@ -71,21 +71,21 @@
         0.735,
         0.272
       ],
-      "size": 76,
+      "size": 82,
       "angle": -14,
-      "alpha": 220,
+      "alpha": 232,
       "bold": true
     },
     {
-      "text": "SON GOKU",
+      "text": "SAIYAN",
       "region": "hair",
       "pos": [
         0.678,
         0.21
       ],
-      "size": 36,
+      "size": 40,
       "angle": 14,
-      "alpha": 205,
+      "alpha": 214,
       "bold": true
     },
     {
@@ -95,9 +95,9 @@
         0.817,
         0.312
       ],
-      "size": 34,
+      "size": 38,
       "angle": 24,
-      "alpha": 210,
+      "alpha": 220,
       "bold": true
     },
     {
@@ -107,9 +107,9 @@
         0.748,
         0.5
       ],
-      "size": 31,
+      "size": 35,
       "angle": -12,
-      "alpha": 205,
+      "alpha": 214,
       "bold": true
     },
     {
@@ -119,9 +119,9 @@
         0.744,
         0.692
       ],
-      "size": 27,
+      "size": 30,
       "angle": 78,
-      "alpha": 195,
+      "alpha": 206,
       "bold": true
     },
     {
@@ -131,9 +131,9 @@
         0.79,
         0.836
       ],
-      "size": 42,
+      "size": 46,
       "angle": -12,
-      "alpha": 215,
+      "alpha": 226,
       "bold": true
     },
     {
@@ -143,9 +143,9 @@
         0.865,
         0.815
       ],
-      "size": 39,
+      "size": 42,
       "angle": 17,
-      "alpha": 212,
+      "alpha": 222,
       "bold": true
     },
     {
@@ -155,9 +155,9 @@
         0.714,
         0.842
       ],
-      "size": 31,
+      "size": 34,
       "angle": 11,
-      "alpha": 205,
+      "alpha": 214,
       "bold": true
     },
     {
@@ -167,9 +167,9 @@
         0.818,
         0.925
       ],
-      "size": 29,
+      "size": 31,
       "angle": -6,
-      "alpha": 205,
+      "alpha": 214,
       "bold": true
     }
   ],
@@ -432,5 +432,6 @@
       "size": 18,
       "alpha": 192
     }
-  ]
+  ],
+  "reconstruction_strength": "hard"
 }
