@@ -12,6 +12,8 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from scipy import ndimage as ndi
 
+from glyphforge.micrography import generate_flow_layout
+
 
 DEFAULT_WORDS = {
     "hair": ["LEGEND", "POWER", "FOCUS", "STRENGTH"],
@@ -96,6 +98,7 @@ def load_profile(path: Path | None, subject: str | None, extra_words: list[str])
     profile.setdefault("words", {key: list(value) for key, value in DEFAULT_WORDS.items()})
     profile.setdefault("anchors", [])
     profile.setdefault("lanes", [])
+    profile.setdefault("flow_layout", {"enabled": False})
     profile.setdefault("foreground_hint", {})
     profile["background"] = profile.get("background", "black")
     profile.setdefault("reconstruction_strength", "hard" if profile["background"] == "black" else "soft")
@@ -463,8 +466,58 @@ def combine_alpha_masks(layers: list[Image.Image], threshold: int = 24) -> np.nd
     return mask
 
 
-def interpolate_lane(points: list[list[float]], width: int, height: int, spacing: float) -> list[tuple[float, float, float]]:
-    scaled = [(x * width, y * height) for x, y in points]
+def lane_points_to_pixels(
+    lane: dict[str, Any],
+    width: int,
+    height: int,
+) -> list[tuple[float, float]]:
+    if "points_px" in lane:
+        return [(float(x), float(y)) for x, y in lane["points_px"]]
+    return [(float(x) * width, float(y) * height) for x, y in lane["points"]]
+
+
+def lane_length_px(points: list[tuple[float, float]], closed: bool = False) -> float:
+    if len(points) < 2:
+        return 0.0
+    total = 0.0
+    pairs = list(zip(points[:-1], points[1:]))
+    if closed:
+        pairs.append((points[-1], points[0]))
+    for (x0, y0), (x1, y1) in pairs:
+        total += math.hypot(x1 - x0, y1 - y0)
+    return total
+
+
+def estimate_lane_curvature(points: list[tuple[float, float]], closed: bool = False) -> float:
+    if len(points) < 3:
+        return 0.0
+    total = 0.0
+    count = 0
+    n = len(points)
+    indices = range(n) if closed else range(1, n - 1)
+    for idx in indices:
+        prev_idx = (idx - 1) % n
+        next_idx = (idx + 1) % n
+        if not closed and (idx == 0 or idx == n - 1):
+            continue
+        x0, y0 = points[prev_idx]
+        x1, y1 = points[idx]
+        x2, y2 = points[next_idx]
+        v1x, v1y = x1 - x0, y1 - y0
+        v2x, v2y = x2 - x1, y2 - y1
+        l1 = math.hypot(v1x, v1y)
+        l2 = math.hypot(v2x, v2y)
+        if l1 < 1e-3 or l2 < 1e-3:
+            continue
+        dot = max(-1.0, min(1.0, (v1x * v2x + v1y * v2y) / (l1 * l2)))
+        total += math.acos(dot) / max((l1 + l2) * 0.5, 1.0)
+        count += 1
+    return total / max(count, 1)
+
+
+def interpolate_lane(lane: dict[str, Any], width: int, height: int, spacing: float) -> list[tuple[float, float, float]]:
+    scaled = lane_points_to_pixels(lane, width, height)
+    closed = bool(lane.get("closed", False))
     segments: list[tuple[float, float, float, float, float]] = []
     total = 0.0
     for (x0, y0), (x1, y1) in zip(scaled[:-1], scaled[1:]):
@@ -473,6 +526,13 @@ def interpolate_lane(points: list[list[float]], width: int, height: int, spacing
             continue
         segments.append((x0, y0, x1, y1, length))
         total += length
+    if closed and len(scaled) > 2:
+        x0, y0 = scaled[-1]
+        x1, y1 = scaled[0]
+        length = math.hypot(x1 - x0, y1 - y0)
+        if length >= 1:
+            segments.append((x0, y0, x1, y1, length))
+            total += length
     samples: list[tuple[float, float, float]] = []
     dist = 0.0
     while dist <= total:
@@ -506,23 +566,34 @@ def resolve_words(spec: Any, profile: dict[str, Any]) -> list[str]:
     return [str(item) for item in spec]
 
 
-def render_lanes(ref: np.ndarray, maps: dict[str, np.ndarray], profile: dict[str, Any], rng: random.Random) -> tuple[Image.Image, Image.Image, int]:
+def render_lanes(
+    ref: np.ndarray,
+    maps: dict[str, np.ndarray],
+    profile: dict[str, Any],
+    lane_specs: list[dict[str, Any]],
+    rng: random.Random,
+) -> tuple[Image.Image, Image.Image, int]:
     h, w = ref.shape[:2]
     layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     draw_overlay = ImageDraw.Draw(overlay)
     placed = 0
-    for lane in profile.get("lanes", []):
+    for lane in lane_specs:
         region = str(lane["region"])
         words = resolve_words(lane["words"], profile)
-        samples = interpolate_lane(lane["points"], w, h, float(lane["spacing"]))
+        samples = interpolate_lane(lane, w, h, float(lane["spacing"]))
         points_px = [(int(x), int(y)) for x, y, _ in samples]
         if len(points_px) > 1:
-            draw_overlay.line(points_px, fill=(0, 255, 255, 165), width=3)
+            if bool(lane.get("closed", False)):
+                points_px = points_px + [points_px[0]]
+            fill = (0, 255, 255, 170) if lane.get("source") == "auto" else (255, 96, 0, 190)
+            draw_overlay.line(points_px, fill=fill, width=3)
         region_mask = maps["subject"] if region == "outline" else maps[region]
-        for pass_index in range(2):
-            pass_spacing = max(18.0, float(lane["spacing"]) * (0.86 if pass_index else 1.0))
-            pass_samples = interpolate_lane(lane["points"], w, h, pass_spacing)
+        pass_count = 2
+        jitter = 1 if lane.get("source") == "auto" else 2
+        for pass_index in range(pass_count):
+            pass_spacing = max(18.0, float(lane["spacing"]) * (0.92 if (pass_index and pass_count > 1) else 1.0))
+            pass_samples = interpolate_lane(lane, w, h, pass_spacing)
             for idx, (x, y, angle) in enumerate(pass_samples):
                 ix, iy = int(round(x)), int(round(y))
                 if ix < 0 or ix >= w or iy < 0 or iy >= h:
@@ -537,17 +608,50 @@ def render_lanes(ref: np.ndarray, maps: dict[str, np.ndarray], profile: dict[str
                 alpha = int(np.clip(int(lane["alpha"]) + pass_index * 16 + maps["edge_strength"][iy, ix] * 42, 96, 240))
                 draw_text(
                     layer,
-                    ix + rng.randint(-2, 2),
-                    iy + rng.randint(-2, 2),
+                    ix + rng.randint(-jitter, jitter),
+                    iy + rng.randint(-jitter, jitter),
                     word,
                     size,
                     region_color(ref, maps, region, ix, iy, rng),
                     alpha,
-                    angle + rng.uniform(-5, 5),
+                    angle + rng.uniform(-3, 3) if lane.get("source") == "auto" else angle + rng.uniform(-5, 5),
                     size >= 16,
                 )
                 placed += 1
     return clip_layer(layer, maps["subject"]), overlay, placed
+
+
+def build_lane_specs(
+    maps: dict[str, np.ndarray],
+    profile: dict[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    flow_config = dict(profile.get("flow_layout", {}))
+    guide_lanes = [dict(lane, source="guide", closed=bool(lane.get("closed", False))) for lane in profile.get("lanes", [])]
+    if not bool(flow_config.get("enabled", False)):
+        lengths = []
+        curvatures = []
+        for lane in guide_lanes:
+            points = lane_points_to_pixels(lane, maps["subject"].shape[1], maps["subject"].shape[0])
+            closed = bool(lane.get("closed", False))
+            lengths.append(lane_length_px(points, closed))
+            curvatures.append(estimate_lane_curvature(points, closed))
+        diagnostics = {
+            "enabled": False,
+            "generated_lanes": 0,
+            "guide_lanes": len(guide_lanes),
+            "candidate_lanes": len(guide_lanes),
+            "mean_lane_length_px": float(np.mean(lengths)) if lengths else 0.0,
+            "mean_lane_curvature": float(np.mean(curvatures)) if curvatures else 0.0,
+            "short_lane_ratio": 0.0,
+            "lane_coverage_subject": 0.0,
+            "regions": {},
+        }
+        return guide_lanes, diagnostics
+    auto_layout = generate_flow_layout(maps, flow_config, profile.get("words"))
+    diagnostics = dict(auto_layout["diagnostics"])
+    diagnostics["guide_lanes"] = len(guide_lanes)
+    diagnostics["generated_lanes"] = int(diagnostics.get("generated_lanes", 0))
+    return guide_lanes + auto_layout["lanes"], diagnostics
 
 
 def render_anchors(ref: np.ndarray, maps: dict[str, np.ndarray], profile: dict[str, Any], rng: random.Random) -> tuple[Image.Image, Image.Image, int]:
@@ -832,28 +936,31 @@ def render_word_tribute(
     reconstruction_strength = str(profile.get("reconstruction_strength", "hard" if background == "black" else "soft"))
     maps = build_masks(ref, profile, subject_override)
     words = profile["words"]
+    flow_enabled = bool(profile.get("flow_layout", {}).get("enabled", False))
 
     hard_black = background == "black" and reconstruction_strength == "hard"
-    hair_count = max(640 if hard_black else 260, int(maps["hair"].sum() / (180 if hard_black else 520)))
-    skin_count = max(760 if hard_black else 240, int(maps["skin"].sum() / (165 if hard_black else 470)))
-    primary_count = max(980 if hard_black else 420, int(maps["orange_gi"].sum() / (170 if hard_black else 620)))
-    secondary_count = max(540 if hard_black else 240, int(maps["blue_undershirt"].sum() / (150 if hard_black else 430)))
-    outline_count = max(520 if hard_black else 260, int(maps["outline"].sum() / (95 if hard_black else 180)))
-    light_count = max(380 if hard_black else 140, int(maps["light_subject"].sum() / (210 if hard_black else 900)))
+    texture_scale = 0.28 if flow_enabled and hard_black else 1.0
+    hair_count = int(max(180 if hard_black else 90, int(maps["hair"].sum() / (180 if hard_black else 520)) * texture_scale))
+    skin_count = int(max(220 if hard_black else 120, int(maps["skin"].sum() / (165 if hard_black else 470)) * texture_scale))
+    primary_count = int(max(260 if hard_black else 150, int(maps["orange_gi"].sum() / (170 if hard_black else 620)) * texture_scale))
+    secondary_count = int(max(150 if hard_black else 90, int(maps["blue_undershirt"].sum() / (150 if hard_black else 430)) * texture_scale))
+    outline_count = int(max(140 if hard_black else 100, int(maps["outline"].sum() / (95 if hard_black else 180)) * texture_scale))
+    light_count = int(max(80 if hard_black else 50, int(maps["light_subject"].sum() / (210 if hard_black else 900)) * texture_scale))
 
     text_layers = [
         render_region_texture(ref, maps, "hair", words["hair"], hair_count, (10, 30), (130, 238), rng),
-        render_region_texture(ref, maps, "hair", words["hair"], max(320, hair_count // 2), (6, 12), (112, 216), rng),
+        render_region_texture(ref, maps, "hair", words["hair"], max(110 if flow_enabled else 320, hair_count // 2), (6, 11), (108, 200), rng),
         render_region_texture(ref, maps, "skin", words["skin"] + words.get("neck", []), skin_count, (9, 22), (132, 228), rng),
-        render_region_texture(ref, maps, "skin", words["skin"] + words.get("neck", []), max(420, skin_count // 2), (5, 11), (104, 196), rng),
+        render_region_texture(ref, maps, "skin", words["skin"] + words.get("neck", []), max(120 if flow_enabled else 420, skin_count // 2), (5, 10), (98, 182), rng),
         render_region_texture(ref, maps, "orange_gi", words["orange_gi"], primary_count, (11, 28), (138, 236), rng),
-        render_region_texture(ref, maps, "orange_gi", words["orange_gi"], max(520, primary_count // 2), (6, 12), (114, 208), rng),
+        render_region_texture(ref, maps, "orange_gi", words["orange_gi"], max(160 if flow_enabled else 520, primary_count // 2), (6, 11), (106, 192), rng),
         render_region_texture(ref, maps, "blue_undershirt", words["blue_undershirt"], secondary_count, (10, 24), (136, 232), rng),
-        render_region_texture(ref, maps, "blue_undershirt", words["blue_undershirt"], max(260, secondary_count // 2), (5, 11), (112, 196), rng),
-        render_region_texture(ref, maps, "outline", words["outline"], outline_count, (6, 14), (142, 240), rng),
-        render_region_texture(ref, maps, "light_subject", words["skin"] + words["orange_gi"], light_count, (6, 13), (95, 184), rng),
+        render_region_texture(ref, maps, "blue_undershirt", words["blue_undershirt"], max(90 if flow_enabled else 260, secondary_count // 2), (5, 10), (104, 182), rng),
+        render_region_texture(ref, maps, "outline", words["outline"], outline_count, (6, 13), (136, 224), rng),
+        render_region_texture(ref, maps, "light_subject", words["skin"] + words["orange_gi"], light_count, (6, 12), (88, 168), rng),
     ]
-    lane_layer, lane_overlay, lane_words = render_lanes(ref, maps, profile, rng)
+    lane_specs, lane_diagnostics = build_lane_specs(maps, profile)
+    lane_layer, lane_overlay, lane_words = render_lanes(ref, maps, profile, lane_specs, rng)
     anchor_layer, anchor_overlay, anchor_words = render_anchors(ref, maps, profile, rng)
     text_layers.extend([lane_layer, anchor_layer])
 
@@ -880,18 +987,26 @@ def render_word_tribute(
     metrics["subject_pixels"] = int(maps["subject"].sum())
     metrics["anchor_words"] = anchor_words
     metrics["contour_lane_words"] = lane_words
+    metrics["generated_lanes"] = int(lane_diagnostics.get("generated_lanes", 0))
+    metrics["guide_lanes"] = int(lane_diagnostics.get("guide_lanes", 0))
+    metrics["lane_coverage_subject"] = float(lane_diagnostics.get("lane_coverage_subject", 0.0))
+    metrics["mean_lane_length_px"] = float(lane_diagnostics.get("mean_lane_length_px", 0.0))
+    metrics["short_lane_ratio"] = float(lane_diagnostics.get("short_lane_ratio", 0.0))
+    metrics["mean_lane_curvature"] = float(lane_diagnostics.get("mean_lane_curvature", 0.0))
     metrics["texture_words"] = (
         hair_count
-        + max(320, hair_count // 2)
+        + max(110 if flow_enabled else 320, hair_count // 2)
         + skin_count
-        + max(420, skin_count // 2)
+        + max(120 if flow_enabled else 420, skin_count // 2)
         + primary_count
-        + max(520, primary_count // 2)
+        + max(160 if flow_enabled else 520, primary_count // 2)
         + secondary_count
-        + max(260, secondary_count // 2)
+        + max(90 if flow_enabled else 260, secondary_count // 2)
         + outline_count
         + light_count
     )
+    metrics["microtext_to_lane_ratio"] = float(metrics["texture_words"] / max(lane_words, 1))
+    metrics["lane_diagnostics"] = lane_diagnostics
 
     Image.fromarray(rec, "RGB").save(out_dir / "current_best.png")
     side_by_side(ref, rec.astype(np.float32), background).save(out_dir / "current_best_side_by_side.png")
