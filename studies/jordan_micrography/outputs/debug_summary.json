@@ -6,14 +6,14 @@
     788
   ],
   "regions": {
-    "subject_pixels": 235335,
-    "dark_hair_or_shadow_pixels": 144208,
+    "subject_pixels": 233314,
+    "dark_hair_or_shadow_pixels": 143977,
     "skin_or_warm_pixels": 49983,
     "clothing_primary_pixels": 155666,
-    "clothing_secondary_pixels": 29271,
+    "clothing_secondary_pixels": 27254,
     "highlight_pixels": 31896,
-    "outline_or_edge_pixels": 184234,
-    "subject_coverage": 0.213320340826686
+    "outline_or_edge_pixels": 181893,
+    "subject_coverage": 0.2114883973894126
   },
   "lanes": {
     "skin_or_warm": {
@@ -23,11 +23,13 @@
       "discarded_short_lanes": 0,
       "discarded_curvy_lanes": 0,
       "discarded_spacing_lanes": 0,
-      "mean_lane_length_px": 197.2000047802687,
+      "mean_lane_length_px": 214.80001678733646,
       "mean_lane_curvature": 0.0,
       "short_lane_ratio": 0.0,
-      "total_lane_length_px": 1972.000047802687,
-      "notes": []
+      "total_lane_length_px": 2148.0001678733647,
+      "notes": [
+        "dropped_small_components=1"
+      ]
     },
     "clothing_primary": {
       "region": "clothing_primary",
@@ -36,37 +38,41 @@
       "discarded_short_lanes": 0,
       "discarded_curvy_lanes": 0,
       "discarded_spacing_lanes": 0,
-      "mean_lane_length_px": 407.4666575509733,
+      "mean_lane_length_px": 425.8666644213627,
       "mean_lane_curvature": 0.0,
       "short_lane_ratio": 0.0,
-      "total_lane_length_px": 6111.999863264599,
+      "total_lane_length_px": 6387.999966320442,
       "notes": []
     },
     "clothing_secondary": {
       "region": "clothing_secondary",
-      "candidate_lanes": 7,
-      "accepted_lanes": 5,
+      "candidate_lanes": 5,
+      "accepted_lanes": 3,
       "discarded_short_lanes": 0,
       "discarded_curvy_lanes": 0,
       "discarded_spacing_lanes": 2,
-      "mean_lane_length_px": 202.39998834000178,
+      "mean_lane_length_px": 224.00006684443818,
       "mean_lane_curvature": 0.0,
       "short_lane_ratio": 0.0,
-      "total_lane_length_px": 1011.9999417000089,
-      "notes": []
+      "total_lane_length_px": 672.0002005333147,
+      "notes": [
+        "dropped_small_components=1"
+      ]
     },
     "dark_hair_or_shadow": {
       "region": "dark_hair_or_shadow",
-      "candidate_lanes": 29,
-      "accepted_lanes": 28,
+      "candidate_lanes": 27,
+      "accepted_lanes": 27,
       "discarded_short_lanes": 0,
       "discarded_curvy_lanes": 0,
-      "discarded_spacing_lanes": 1,
-      "mean_lane_length_px": 122.42857142857143,
+      "discarded_spacing_lanes": 0,
+      "mean_lane_length_px": 135.25925925925927,
       "mean_lane_curvature": 0.0,
       "short_lane_ratio": 0.0,
-      "total_lane_length_px": 3428.0,
-      "notes": []
+      "total_lane_length_px": 3652.0,
+      "notes": [
+        "dropped_small_components=14"
+      ]
     },
     "highlight": {
       "region": "highlight",
@@ -79,27 +85,39 @@
       "mean_lane_curvature": 0.0,
       "short_lane_ratio": 0.0,
       "total_lane_length_px": 0.0,
-      "notes": []
+      "notes": [
+        "dropped_small_components=136"
+      ]
     },
     "outline_or_edge": {
       "region": "outline_or_edge",
       "candidate_lanes": 54,
-      "accepted_lanes": 21,
+      "accepted_lanes": 24,
       "discarded_short_lanes": 0,
       "discarded_curvy_lanes": 0,
-      "discarded_spacing_lanes": 33,
-      "mean_lane_length_px": 313.45678092845344,
-      "mean_lane_curvature": 0.04656396323363173,
+      "discarded_spacing_lanes": 30,
+      "mean_lane_length_px": 273.43947388417195,
+      "mean_lane_curvature": 0.04097816386690898,
       "short_lane_ratio": 0.0,
-      "total_lane_length_px": 6582.592399497522,
-      "notes": []
+      "total_lane_length_px": 6562.547373220127,
+      "notes": [
+        "dropped_small_components=13"
+      ]
     }
+  },
+  "lane_gating": {
+    "gated_out_island_lanes": 0,
+    "gated_out_far_lanes": 0,
+    "gated_out_low_coverage_lanes": 0,
+    "lane_gating_fallback_kept_all": 0
   },
   "text_layout": {
     "text_path_count": 79,
-    "used_word_count": 269,
-    "total_text_chars": 2852,
-    "hero_path_count": 3
+    "used_word_count": 201,
+    "total_text_chars": 2071,
+    "hero_path_count": 8,
+    "anchor_path_count": 6,
+    "dropped_text_island_groups": 0
   },
   "rasterizer": "pillow_fallback",
   "outputs": {

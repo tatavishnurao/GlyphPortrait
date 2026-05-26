@@ -53,6 +53,23 @@ def _largest_components(mask: np.ndarray, min_area: int) -> np.ndarray:
     return out
 
 
+def _dominant_component(mask: np.ndarray) -> np.ndarray:
+    binary = (mask > 0).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
+    if count <= 1:
+        return binary * 255
+    best_label = 1
+    best_area = int(stats[1, cv2.CC_STAT_AREA])
+    for label in range(2, count):
+        area = int(stats[label, cv2.CC_STAT_AREA])
+        if area > best_area:
+            best_area = area
+            best_label = label
+    out = np.zeros_like(binary)
+    out[labels == best_label] = 255
+    return out
+
+
 def _black_background_subject_hint(rgb: np.ndarray, gray: np.ndarray) -> np.ndarray:
     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
     sat = hsv[..., 1]
@@ -95,6 +112,7 @@ def load_and_preprocess(
     else:
         raw_mask = _load_mask(mask_path, rgb.shape[:2])
     subject_mask = cleanup_mask(raw_mask, kernel_size=5, blur_size=7)
+    subject_mask = _dominant_component(subject_mask)
     edges = cv2.Canny(gray_equalized, threshold1=70, threshold2=150)
     edges = cv2.dilate(edges, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)), iterations=1)
     h, w = rgb.shape[:2]

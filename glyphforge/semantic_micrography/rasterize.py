@@ -89,12 +89,64 @@ def rasterize_layout_preview(
         words = item.text.split()
         if not words:
             continue
-        spacing = max(22.0, item.font_size * 4.8)
+        spacing = max(20.0, item.font_size * (4.0 + item.letter_spacing * 0.8))
         for idx, (x, y, angle) in enumerate(_samples(item.lane.points, spacing)):
             token = words[idx % len(words)]
             if idx + 1 < len(words) and len(token) < 5:
                 token = f"{token} {words[(idx + 1) % len(words)]}"
-            _draw_rotated_text(canvas, token, x, y, angle, item.font_size, _hex_to_rgb(item.fill), item.is_hero)
+            bold = item.font_weight >= 700 or item.is_hero or item.is_anchor
+            _draw_rotated_text(canvas, token, x, y, angle, item.font_size, _hex_to_rgb(item.fill), bold)
     png_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.convert("RGB").save(png_path)
+    return png_path
+
+
+def rasterize_lane_overlay_preview(
+    layout: TextLayoutResult,
+    canvas_size: tuple[int, int],
+    png_path: Path,
+) -> Path:
+    w, h = canvas_size
+    colors = {
+        "dark_hair_or_shadow": (104, 216, 255),
+        "skin_or_warm": (255, 209, 102),
+        "clothing_primary": (255, 77, 77),
+        "clothing_secondary": (160, 196, 255),
+        "highlight": (255, 255, 255),
+        "outline_or_edge": (128, 255, 219),
+    }
+    image = Image.new("RGB", (w, h), color=(0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    region_counts: dict[str, int] = {}
+    for item in layout.text_paths:
+        lane = item.lane
+        color = colors.get(lane.region, (204, 204, 204))
+        width = 4 if item.is_anchor else (3 if item.is_hero else 2)
+        points = [(float(x), float(y)) for x, y in lane.points]
+        if len(points) < 2:
+            continue
+        draw.line(points, fill=color, width=width)
+        x, y = points[0]
+        label = f'{lane.order_index}|{int(round(lane.length_px))}'
+        draw.text((x, y), label, fill=color, font=_font(10, False))
+        region_counts[lane.region] = region_counts.get(lane.region, 0) + 1
+
+    draw.rectangle((14, 14, 400, 194), fill=(8, 8, 8), outline=(72, 72, 72), width=1)
+    draw.text((26, 34), "Lane Overlay Diagnostics", fill=(240, 240, 240), font=_font(16, True))
+    draw.text((26, 55), "thick=anchor  medium=hero", fill=(212, 212, 212), font=_font(12, False))
+    y = 78
+    for region in [
+        "dark_hair_or_shadow",
+        "skin_or_warm",
+        "clothing_primary",
+        "clothing_secondary",
+        "highlight",
+        "outline_or_edge",
+    ]:
+        color = colors.get(region, (204, 204, 204))
+        draw.rectangle((26, y - 8, 40, y - 2), fill=color)
+        draw.text((48, y - 10), f"{region}: {region_counts.get(region, 0)}", fill=(232, 232, 232), font=_font(12, False))
+        y += 20
+    png_path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(png_path)
     return png_path

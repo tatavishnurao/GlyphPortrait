@@ -28,6 +28,63 @@ class MicrographyStyleConfig:
     min_lane_length_px: float = 80.0
     max_lane_curvature: float = 0.18
     edge_stroke: bool = True
+    anchor_lane_count: int = 8
+    anchor_min_length_px: float = 220.0
+    anchor_font_scale: float = 1.55
+    anchor_font_weight: int = 800
+    anchor_letter_spacing: float = 0.9
+    anchor_opacity: float = 0.98
+    anchor_regions: tuple[str, ...] = (
+        "clothing_primary",
+        "outline_or_edge",
+        "skin_or_warm",
+    )
+    region_lane_styles: dict[str, dict[str, float | int]] = field(
+        default_factory=lambda: {
+            "dark_hair_or_shadow": {
+                "spacing_scale": 0.78,
+                "font_scale": 0.92,
+                "letter_spacing": 0.14,
+                "opacity": 0.92,
+                "font_weight": 520,
+            },
+            "skin_or_warm": {
+                "spacing_scale": 0.90,
+                "font_scale": 1.00,
+                "letter_spacing": 0.20,
+                "opacity": 0.93,
+                "font_weight": 540,
+            },
+            "clothing_primary": {
+                "spacing_scale": 1.00,
+                "font_scale": 1.20,
+                "letter_spacing": 0.36,
+                "opacity": 0.96,
+                "font_weight": 660,
+            },
+            "clothing_secondary": {
+                "spacing_scale": 0.94,
+                "font_scale": 1.03,
+                "letter_spacing": 0.24,
+                "opacity": 0.92,
+                "font_weight": 560,
+            },
+            "highlight": {
+                "spacing_scale": 0.85,
+                "font_scale": 0.92,
+                "letter_spacing": 0.12,
+                "opacity": 0.88,
+                "font_weight": 500,
+            },
+            "outline_or_edge": {
+                "spacing_scale": 0.60,
+                "font_scale": 0.86,
+                "letter_spacing": 0.10,
+                "opacity": 0.90,
+                "font_weight": 500,
+            },
+        }
+    )
     region_palettes: dict[str, list[str]] = field(
         default_factory=lambda: {
             "subject": ["#d8d8d8"],
