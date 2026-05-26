@@ -1,0 +1,114 @@
+{
+  "input": "reference_img/Michael-Jordan-Wallpaper-Desktop-1.jpg",
+  "subject": "Michael Jordan",
+  "canvas_size": [
+    1400,
+    788
+  ],
+  "regions": {
+    "subject_pixels": 235335,
+    "dark_hair_or_shadow_pixels": 144208,
+    "skin_or_warm_pixels": 49983,
+    "clothing_primary_pixels": 155666,
+    "clothing_secondary_pixels": 29271,
+    "highlight_pixels": 31896,
+    "outline_or_edge_pixels": 184234,
+    "subject_coverage": 0.213320340826686
+  },
+  "lanes": {
+    "skin_or_warm": {
+      "region": "skin_or_warm",
+      "candidate_lanes": 10,
+      "accepted_lanes": 10,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 0,
+      "mean_lane_length_px": 197.2000047802687,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 1972.000047802687,
+      "notes": []
+    },
+    "clothing_primary": {
+      "region": "clothing_primary",
+      "candidate_lanes": 15,
+      "accepted_lanes": 15,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 0,
+      "mean_lane_length_px": 407.4666575509733,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 6111.999863264599,
+      "notes": []
+    },
+    "clothing_secondary": {
+      "region": "clothing_secondary",
+      "candidate_lanes": 7,
+      "accepted_lanes": 5,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 2,
+      "mean_lane_length_px": 202.39998834000178,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 1011.9999417000089,
+      "notes": []
+    },
+    "dark_hair_or_shadow": {
+      "region": "dark_hair_or_shadow",
+      "candidate_lanes": 29,
+      "accepted_lanes": 28,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 1,
+      "mean_lane_length_px": 122.42857142857143,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 3428.0,
+      "notes": []
+    },
+    "highlight": {
+      "region": "highlight",
+      "candidate_lanes": 0,
+      "accepted_lanes": 0,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 0,
+      "mean_lane_length_px": 0.0,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 0.0,
+      "notes": []
+    },
+    "outline_or_edge": {
+      "region": "outline_or_edge",
+      "candidate_lanes": 54,
+      "accepted_lanes": 21,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 33,
+      "mean_lane_length_px": 313.45678092845344,
+      "mean_lane_curvature": 0.04656396323363173,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 6582.592399497522,
+      "notes": []
+    }
+  },
+  "text_layout": {
+    "text_path_count": 79,
+    "used_word_count": 269,
+    "total_text_chars": 2852,
+    "hero_path_count": 3
+  },
+  "rasterizer": "pillow_fallback",
+  "outputs": {
+    "svg": "current_best.svg",
+    "png": "current_best.png",
+    "metrics": "current_best_metrics.json",
+    "regions_panel": "regions_panel.png",
+    "lane_overlay_svg": "lane_overlay.svg",
+    "lane_overlay_png": "lane_overlay.png"
+  },
+  "note": "Practical raster approximation of Digital Micrography; SVG textPath is the master representation."
+}

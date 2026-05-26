@@ -1,0 +1,35 @@
+{
+  "subject_coverage": 0.213320340826686,
+  "region_coverage": {
+    "dark_hair_or_shadow": 0.7235104848552092,
+    "skin_or_warm": 0.6717083808494888,
+    "clothing_primary": 0.7103028278493698,
+    "clothing_secondary": 0.6621570838030816,
+    "highlight": 0.6124278906445949,
+    "outline_or_edge": 0.6934279231846456
+  },
+  "lane_count": 79,
+  "total_lane_length_px": 19106.592252264818,
+  "mean_lane_length_px": 241.8555981299344,
+  "short_lane_ratio": 0.0,
+  "mean_lane_curvature": 0.012377762378560335,
+  "lane_coverage_subject": 0.6959950708564387,
+  "text_coverage_subject": 0.6959950708564387,
+  "source_pixel_leakage": 0.0,
+  "background_cleanliness": 1.0,
+  "render_time_seconds": 11.169,
+  "output_resolution": [
+    1400,
+    788
+  ],
+  "used_word_count": 269,
+  "total_text_chars": 2852,
+  "microtext_to_lane_ratio": 36.10126582278481,
+  "candidate_lanes": 115,
+  "short_lane_count": 0,
+  "curvature_rms": 0.04124656220061584,
+  "rasterizer": "pillow_fallback",
+  "style": "tribute_dark",
+  "background": "black",
+  "subject": "Michael Jordan"
+}

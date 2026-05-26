@@ -1,0 +1,69 @@
+{
+  "subject": "Michael Jordan",
+  "hero_words": [
+    "MICHAEL JORDAN",
+    "AIR JORDAN",
+    "MVP",
+    "BULLS",
+    "23",
+    "CHAMPION"
+  ],
+  "texture_words": [
+    "Finals MVP",
+    "Chicago Bulls",
+    "Rookie of the Year",
+    "NBA Champion",
+    "All-Star",
+    "Scoring Champion",
+    "Clutch",
+    "Dominance",
+    "Dedication",
+    "Greatness",
+    "Defense",
+    "Legacy",
+    "Flu Game",
+    "Last Shot"
+  ],
+  "region_words": {
+    "dark_hair_or_shadow": [
+      "AIR JORDAN",
+      "MVP",
+      "Dominance",
+      "Legacy",
+      "Defense"
+    ],
+    "skin_or_warm": [
+      "Dedication",
+      "Clutch",
+      "Greatness",
+      "Finals MVP",
+      "Champion"
+    ],
+    "clothing_primary": [
+      "BULLS",
+      "23",
+      "Chicago Bulls",
+      "NBA Champion",
+      "Finals MVP"
+    ],
+    "clothing_secondary": [
+      "Defense",
+      "All-Star",
+      "Scoring Champion",
+      "Legacy"
+    ],
+    "outline_or_edge": [
+      "Air Jordan",
+      "Bulls",
+      "Champion",
+      "MVP"
+    ]
+  },
+  "anchor_words": [
+    "AIR JORDAN",
+    "MVP",
+    "BULLS",
+    "23",
+    "CHAMPION"
+  ]
+}
