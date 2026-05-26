@@ -1,6 +1,6 @@
 # GlyphPortrait
 
-Turns a portrait into typographic poster/wallpaper using real words inside the subject silhouette.
+GlyphPortrait is a semantic digital micrography engine for portrait reconstruction. It takes a person image and a user-provided word prompt, extracts/vectorizes visual regions, generates coherent text streamlines, and renders the person using readable text.
 
 ## Run
 
