@@ -17,7 +17,7 @@
   "text_coverage_subject": 0.7332393255441165,
   "source_pixel_leakage": 0.0,
   "background_cleanliness": 1.0,
-  "render_time_seconds": 10.102,
+  "render_time_seconds": 10.436,
   "output_resolution": [
     1400,
     788

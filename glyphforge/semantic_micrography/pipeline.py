@@ -111,7 +111,13 @@ def run_pipeline(
         rasterize_svg(svg_path, out_dir / "current_best.png")
     except RuntimeError:
         rasterizer = "pillow_fallback"
-        rasterize_layout_preview(layout, prep.canvas_size, style, out_dir / "current_best.png")
+        rasterize_layout_preview(
+            layout,
+            prep.canvas_size,
+            style,
+            out_dir / "current_best.png",
+            clip_mask=region_result.masks["subject"],
+        )
     try:
         rasterize_svg(overlay_svg_path, out_dir / "lane_overlay.png")
     except RuntimeError:

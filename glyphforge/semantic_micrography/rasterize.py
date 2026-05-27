@@ -4,6 +4,7 @@ import importlib.util
 import math
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from glyphforge.semantic_micrography.config import MicrographyStyleConfig
@@ -82,6 +83,7 @@ def rasterize_layout_preview(
     canvas_size: tuple[int, int],
     style: MicrographyStyleConfig,
     png_path: Path,
+    clip_mask: np.ndarray | None = None,
 ) -> Path:
     w, h = canvas_size
     canvas = Image.new("RGBA", (w, h), (*style.background_color, 255))
@@ -96,6 +98,12 @@ def rasterize_layout_preview(
                 token = f"{token} {words[(idx + 1) % len(words)]}"
             bold = item.font_weight >= 700 or item.is_hero or item.is_anchor
             _draw_rotated_text(canvas, token, x, y, angle, item.font_size, _hex_to_rgb(item.fill), bold)
+    if clip_mask is not None:
+        mask = (clip_mask > 0).astype(np.uint8) * 255
+        mask_img = Image.fromarray(mask, "L")
+        arr = np.array(canvas, dtype=np.uint8)
+        arr[..., 3] = np.minimum(arr[..., 3], np.array(mask_img, dtype=np.uint8))
+        canvas = Image.fromarray(arr, "RGBA")
     png_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.convert("RGB").save(png_path)
     return png_path
