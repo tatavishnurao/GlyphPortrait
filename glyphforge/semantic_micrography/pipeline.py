@@ -94,9 +94,24 @@ def run_pipeline(
     out_dir.mkdir(parents=True, exist_ok=True)
 
     prep = load_and_preprocess(input_path, cfg.canvas, background=render_cfg.background, mask_path=mask_path)
+    mask_quality = prep.mask_quality
+    mask_warnings = mask_quality.get("mask_quality_warnings", [])
+    if render_cfg.strict_mask_quality and mask_warnings:
+        raise ValueError(
+            "Subject mask quality check failed: "
+            + "; ".join(str(warning) for warning in mask_warnings)
+        )
     region_result = extract_regions(prep, cfg.regions)
     contours = vectorize_regions(region_result.masks)
-    lanes, lane_diagnostics = generate_lanes(region_result.masks, contours, style)
+    lanes, lane_diagnostics = generate_lanes(
+        region_result.masks,
+        contours,
+        style,
+        feature_maps={
+            "edge_map": prep.edge_map,
+            "luminance": prep.luminance,
+        },
+    )
     gated_lanes, gate_stats = gate_lanes_to_subject(lanes, region_result.masks["subject"])
     ordered_lanes = order_lanes(gated_lanes)
     layout = assign_text_to_lanes(ordered_lanes, profile, style)
@@ -104,7 +119,13 @@ def run_pipeline(
 
     svg_path = render_master_svg(layout, contours, prep.canvas_size, style, out_dir / "current_best.svg")
     overlay_svg_path = render_lane_overlay_svg(layout, prep.canvas_size, out_dir / "lane_overlay.svg")
-    save_regions_panel(region_result, prep.edge_map, out_dir / "regions_panel.png")
+    save_regions_panel(
+        region_result,
+        prep.edge_map,
+        out_dir / "regions_panel.png",
+        mask_source=prep.mask_source,
+        mask_quality=mask_quality,
+    )
 
     rasterizer = "cairosvg"
     try:
@@ -130,17 +151,22 @@ def run_pipeline(
         perf_counter() - start,
         prep.canvas_size,
         lane_diagnostics,
+        edge_map=prep.edge_map,
     )
     metrics["rasterizer"] = rasterizer
     metrics["style"] = style.name
     metrics["background"] = render_cfg.background
     metrics["subject"] = profile.subject_name
+    metrics["mask_source"] = prep.mask_source
+    metrics.update(mask_quality)
     _write_json(out_dir / "current_best_metrics.json", metrics)
 
     debug_summary = {
         "input": str(input_path),
         "subject": profile.subject_name,
         "canvas_size": list(prep.canvas_size),
+        "mask_source": prep.mask_source,
+        "mask_quality": mask_quality,
         "regions": region_result.diagnostics,
         "lanes": lane_diagnostics,
         "lane_gating": gate_stats,

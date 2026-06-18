@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from glyphforge.semantic_micrography.config import PipelineConfig, RenderConfig, style_config
+from glyphforge.semantic_micrography.auto import run_auto_search
 from glyphforge.semantic_micrography.pipeline import run_pipeline
 from glyphforge.semantic_micrography.profiles import load_profile
 
@@ -26,6 +27,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--background", choices=("black", "original", "transparent"), default="black")
     parser.add_argument("--style", choices=("tribute_dark",), default="tribute_dark")
     parser.add_argument("--long-edge", type=int, default=1400)
+    parser.add_argument("--auto", action="store_true", help="Search deterministic style candidates and keep the best canonical output.")
+    parser.add_argument("--candidate-count", type=int, default=32, help="Number of auto-mode candidates to evaluate.")
+    parser.add_argument("--seed", type=int, default=23, help="Seed for deterministic auto-mode candidate generation.")
+    parser.add_argument("--debug-candidates", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--strict-mask-quality",
+        action="store_true",
+        help="Fail before rendering when subject-mask quality checks produce warnings.",
+    )
     return parser
 
 
@@ -35,7 +45,11 @@ def main(argv: list[str] | None = None) -> None:
     style = style_config(args.style)
     config = PipelineConfig(
         style=style,
-        render=RenderConfig(background=args.background, style=args.style),
+        render=RenderConfig(
+            background=args.background,
+            style=args.style,
+            strict_mask_quality=args.strict_mask_quality,
+        ),
     )
     config = PipelineConfig(
         canvas=type(config.canvas)(long_edge=args.long_edge),
@@ -45,7 +59,19 @@ def main(argv: list[str] | None = None) -> None:
         seed=config.seed,
         output_dir=args.out_dir,
     )
-    metrics = run_pipeline(args.input, profile, args.out_dir, config=config, mask_path=args.mask)
+    if args.auto:
+        metrics = run_auto_search(
+            args.input,
+            profile,
+            args.out_dir,
+            config=config,
+            mask_path=args.mask,
+            candidate_count=args.candidate_count,
+            seed=args.seed,
+            debug_candidates=args.debug_candidates,
+        )
+    else:
+        metrics = run_pipeline(args.input, profile, args.out_dir, config=config, mask_path=args.mask)
     print(json.dumps(metrics, indent=2))
 
 

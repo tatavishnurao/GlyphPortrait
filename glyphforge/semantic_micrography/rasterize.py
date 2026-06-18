@@ -122,6 +122,7 @@ def rasterize_lane_overlay_preview(
         "clothing_secondary": (160, 196, 255),
         "highlight": (255, 255, 255),
         "outline_or_edge": (128, 255, 219),
+        "feature_detail": (255, 234, 0),
     }
     image = Image.new("RGB", (w, h), color=(0, 0, 0))
     draw = ImageDraw.Draw(image)
@@ -144,6 +145,7 @@ def rasterize_lane_overlay_preview(
     draw.text((26, 55), "thick=anchor  medium=hero", fill=(212, 212, 212), font=_font(12, False))
     y = 78
     for region in [
+        "feature_detail",
         "dark_hair_or_shadow",
         "skin_or_warm",
         "clothing_primary",

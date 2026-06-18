@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import cv2
@@ -20,6 +20,8 @@ class PreprocessResult:
     edge_map: np.ndarray
     background_mode: BackgroundMode
     canvas_size: tuple[int, int]
+    mask_source: str = "auto"
+    mask_quality: dict[str, object] = field(default_factory=dict)
 
 
 def _resize_to_canvas(image: np.ndarray, config: CanvasConfig) -> np.ndarray:
@@ -70,6 +72,50 @@ def _dominant_component(mask: np.ndarray) -> np.ndarray:
     return out
 
 
+def evaluate_mask_quality(mask: np.ndarray) -> dict[str, object]:
+    binary = mask > 0
+    h, w = binary.shape
+    subject_pixels = int(binary.sum())
+    total_pixels = max(1, h * w)
+    subject_coverage = float(subject_pixels / total_pixels)
+    largest_component_ratio = 0.0
+    bbox = [0, 0, 0, 0]
+    bbox_area_ratio = 0.0
+
+    if subject_pixels > 0:
+        count, labels, stats, _ = cv2.connectedComponentsWithStats(binary.astype(np.uint8), connectivity=8)
+        if count > 1:
+            areas = stats[1:, cv2.CC_STAT_AREA]
+            largest_index = int(np.argmax(areas)) + 1
+            largest_area = int(stats[largest_index, cv2.CC_STAT_AREA])
+            largest_component_ratio = float(largest_area / max(subject_pixels, 1))
+        ys, xs = np.where(binary)
+        min_x = int(xs.min())
+        max_x = int(xs.max())
+        min_y = int(ys.min())
+        max_y = int(ys.max())
+        bbox = [min_x, min_y, max_x, max_y]
+        bbox_area = (max_x - min_x + 1) * (max_y - min_y + 1)
+        bbox_area_ratio = float(bbox_area / total_pixels)
+
+    warnings: list[str] = []
+    if subject_coverage > 0.75:
+        warnings.append("Subject mask covers most of the canvas; background likely swallowed.")
+    if subject_coverage < 0.05:
+        warnings.append("Subject mask too small.")
+    if subject_pixels > 0 and largest_component_ratio < 0.70:
+        warnings.append("Subject mask fragmented.")
+
+    return {
+        "subject_coverage": subject_coverage,
+        "largest_component_ratio": largest_component_ratio,
+        "subject_bbox": bbox,
+        "subject_bbox_area_ratio": bbox_area_ratio,
+        "mask_quality_status": "warning" if warnings else "ok",
+        "mask_quality_warnings": warnings,
+    }
+
+
 def _black_background_subject_hint(rgb: np.ndarray, gray: np.ndarray) -> np.ndarray:
     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
     sat = hsv[..., 1]
@@ -101,6 +147,7 @@ def load_and_preprocess(
     rgb = _resize_to_canvas(rgb, canvas)
     gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
     gray_equalized = cv2.equalizeHist(gray)
+    mask_source = "auto"
     if mask_path is None:
         raw_mask = segment_subject(rgb, gray_equalized)
         if background == "black":
@@ -110,8 +157,10 @@ def load_and_preprocess(
             if hint_area > raw_area * 1.20:
                 raw_mask = bg_hint
     else:
+        mask_source = "manual"
         raw_mask = _load_mask(mask_path, rgb.shape[:2])
     subject_mask = cleanup_mask(raw_mask, kernel_size=5, blur_size=7)
+    mask_quality = evaluate_mask_quality(subject_mask)
     subject_mask = _dominant_component(subject_mask)
     edges = cv2.Canny(gray_equalized, threshold1=70, threshold2=150)
     edges = cv2.dilate(edges, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)), iterations=1)
@@ -123,4 +172,6 @@ def load_and_preprocess(
         edge_map=edges,
         background_mode=background,
         canvas_size=(w, h),
+        mask_source=mask_source,
+        mask_quality=mask_quality,
     )

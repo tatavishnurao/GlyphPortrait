@@ -96,6 +96,7 @@ def render_lane_overlay_svg(
         "clothing_secondary": "#a0c4ff",
         "highlight": "#ffffff",
         "outline_or_edge": "#80ffdb",
+        "feature_detail": "#ffea00",
     }
     body = [f'<rect width="{w}" height="{h}" fill="#000000" />']
     region_counts: dict[str, int] = {}
@@ -115,6 +116,7 @@ def render_lane_overlay_svg(
     body.append('<text x="26" y="58" font-size="12" fill="#d0d0d0">thick: anchor lanes | medium: hero lanes</text>')
     y = 80
     for region in [
+        "feature_detail",
         "dark_hair_or_shadow",
         "skin_or_warm",
         "clothing_primary",

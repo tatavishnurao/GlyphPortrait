@@ -66,6 +66,7 @@ REGION_SPACING_SCALE = {
     "clothing_secondary": 1.05,
     "highlight": 0.90,
     "outline_or_edge": 0.62,
+    "feature_detail": 0.55,
 }
 
 
@@ -124,7 +125,7 @@ def simplify_polyline(points: list[tuple[float, float]], epsilon: float = 1.5) -
     return [(float(x), float(y)) for x, y in approx]
 
 
-def _dominant_angle(mask: np.ndarray) -> float:
+def _dominant_angle(mask: np.ndarray, allow_vertical: bool = False) -> float:
     ys, xs = np.where(mask > 0)
     if xs.size < 16:
         return 0.0
@@ -138,7 +139,7 @@ def _dominant_angle(mask: np.ndarray) -> float:
         angle += 180.0
     while angle > 90.0:
         angle -= 180.0
-    if abs(angle) > 52.0:
+    if not allow_vertical and abs(angle) > 52.0:
         angle = 0.0
     return float(angle)
 
@@ -149,6 +150,14 @@ def _line_mask(shape: tuple[int, int], points: list[tuple[float, float]], width:
         return canvas
     cv2.polylines(canvas, [np.array(points, dtype=np.int32)], isClosed=False, color=255, thickness=max(1, width), lineType=cv2.LINE_AA)
     return canvas > 0
+
+
+def _line_support_ratio(points: list[tuple[float, float]], mask: np.ndarray, width: int = 3) -> float:
+    lane_mask = _line_mask(mask.shape, points, width)
+    lane_area = int(lane_mask.sum())
+    if lane_area == 0:
+        return 0.0
+    return float((lane_mask & (mask > 0)).sum() / lane_area)
 
 
 def _suppress_small_components(mask: np.ndarray, min_area_px: int, keep_top: int = 3) -> tuple[np.ndarray, int]:
@@ -185,9 +194,15 @@ def _extract_runs(samples: list[tuple[float, float, bool]], min_points: int) -> 
     return runs
 
 
-def _scanline_candidates(mask: np.ndarray, region: str, spacing: float, min_length: float) -> list[list[tuple[float, float]]]:
+def _scanline_candidates(
+    mask: np.ndarray,
+    region: str,
+    spacing: float,
+    min_length: float,
+    angle_override: float | None = None,
+) -> list[list[tuple[float, float]]]:
     h, w = mask.shape
-    angle = _dominant_angle(mask)
+    angle = _dominant_angle(mask, allow_vertical=angle_override is not None) if angle_override is None else angle_override
     theta = math.radians(angle)
     dx, dy = math.cos(theta), math.sin(theta)
     nx, ny = -dy, dx
@@ -228,6 +243,237 @@ def _contour_candidates(contours: list[ContourPath], min_length: float) -> list[
     return candidates
 
 
+def _subject_bbox(mask: np.ndarray) -> tuple[int, int, int, int]:
+    ys, xs = np.where(mask > 0)
+    if xs.size == 0:
+        h, w = mask.shape
+        return 0, 0, w - 1, h - 1
+    return int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())
+
+
+def _relative_zone(mask: np.ndarray, x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
+    min_x, min_y, max_x, max_y = _subject_bbox(mask)
+    width = max(1, max_x - min_x + 1)
+    height = max(1, max_y - min_y + 1)
+    zx0 = int(round(min_x + width * x0))
+    zx1 = int(round(min_x + width * x1))
+    zy0 = int(round(min_y + height * y0))
+    zy1 = int(round(min_y + height * y1))
+    out = np.zeros_like(mask, dtype=bool)
+    out[max(0, zy0) : min(mask.shape[0], zy1), max(0, zx0) : min(mask.shape[1], zx1)] = True
+    return out
+
+
+def _feature_component_mask(mask: np.ndarray, min_area_px: int, keep_top: int = 6) -> np.ndarray:
+    binary = (mask > 0).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(binary, connectivity=8)
+    if count <= 1:
+        return binary.astype(bool)
+    components: list[tuple[int, int]] = []
+    for label in range(1, count):
+        area = int(stats[label, cv2.CC_STAT_AREA])
+        if area >= min_area_px:
+            components.append((area, label))
+    components.sort(reverse=True)
+    out = np.zeros_like(binary)
+    for _, label in components[:keep_top]:
+        out[labels == label] = 1
+    return out.astype(bool)
+
+
+def _contour_feature_candidates(mask: np.ndarray, min_length: float) -> list[list[tuple[float, float]]]:
+    binary = (mask > 0).astype(np.uint8) * 255
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    candidates: list[list[tuple[float, float]]] = []
+    for contour in sorted(contours, key=cv2.contourArea, reverse=True)[:12]:
+        if len(contour) < 10:
+            continue
+        epsilon = max(1.2, min_length * 0.012)
+        pts_arr = cv2.approxPolyDP(contour, epsilon=epsilon, closed=False).reshape(-1, 2)
+        pts = [(float(x), float(y)) for x, y in pts_arr]
+        if lane_length(pts, closed=False) >= min_length:
+            candidates.append(pts)
+    return candidates
+
+
+def _segment_angle(points: list[tuple[float, float]]) -> float:
+    if len(points) < 2:
+        return 0.0
+    x0, y0 = points[0]
+    x1, y1 = points[-1]
+    angle = math.degrees(math.atan2(y1 - y0, x1 - x0))
+    while angle <= -90.0:
+        angle += 180.0
+    while angle > 90.0:
+        angle -= 180.0
+    return float(angle)
+
+
+def _angle_allowed(angle: float, angle_band: tuple[float, float] | None) -> bool:
+    if angle_band is None:
+        return True
+    abs_angle = abs(angle)
+    return angle_band[0] <= abs_angle <= angle_band[1]
+
+
+def _hough_feature_candidates(
+    mask: np.ndarray,
+    min_length: float,
+    max_length: float,
+    angle_band: tuple[float, float] | None = None,
+) -> list[list[tuple[float, float]]]:
+    binary = (mask > 0).astype(np.uint8) * 255
+    if int((binary > 0).sum()) < 24:
+        return []
+    lines = cv2.HoughLinesP(
+        binary,
+        rho=1,
+        theta=np.pi / 180,
+        threshold=18,
+        minLineLength=max(24, int(round(min_length * 0.55))),
+        maxLineGap=18,
+    )
+    if lines is None:
+        return []
+    candidates: list[list[tuple[float, float]]] = []
+    seen: set[tuple[int, int, int, int]] = set()
+    for line in lines[:, 0, :]:
+        x0, y0, x1, y1 = [int(v) for v in line]
+        points = [(float(x0), float(y0)), (float(x1), float(y1))]
+        length = lane_length(points)
+        if length < min_length * 0.72 or length > max_length:
+            continue
+        angle = _segment_angle(points)
+        if not _angle_allowed(angle, angle_band):
+            continue
+        key = tuple(round(v / 12) for v in (x0, y0, x1, y1))
+        reverse_key = tuple(round(v / 12) for v in (x1, y1, x0, y0))
+        if key in seen or reverse_key in seen:
+            continue
+        seen.add(key)
+        candidates.append(points)
+    candidates.sort(key=lane_length, reverse=True)
+    return candidates
+
+
+def _make_feature_lane(
+    lane_id: str,
+    points: list[tuple[float, float]],
+    closed: bool = False,
+) -> TextLane:
+    return TextLane(
+        id=lane_id,
+        region="feature_detail",
+        points=points,
+        length_px=lane_length(points, closed=closed),
+        mean_curvature=mean_curvature(points, closed=closed),
+        closed=closed,
+        source="feature",
+    )
+
+
+def generate_feature_lanes(
+    masks: dict[str, np.ndarray],
+    feature_maps: dict[str, np.ndarray],
+    style: MicrographyStyleConfig,
+) -> tuple[list[TextLane], dict[str, float | int | list[str] | str]]:
+    subject = masks["subject"] > 0
+    if not np.any(subject):
+        return [], LaneDiagnostics(region="feature_detail", notes=["empty subject"]).to_dict()
+    min_x, min_y, max_x, max_y = _subject_bbox(subject)
+    subject_diag = math.hypot(max_x - min_x + 1, max_y - min_y + 1)
+
+    edge = feature_maps.get("edge_map")
+    if edge is None:
+        edge = np.zeros(subject.shape, dtype=np.uint8)
+    edge_mask = (edge > 0) & subject
+    dark = (masks.get("dark_hair_or_shadow", np.zeros_like(edge)) > 0) & subject
+    outline = (masks.get("outline_or_edge", np.zeros_like(edge)) > 0) & subject
+    highlight = (masks.get("highlight", np.zeros_like(edge)) > 0) & subject
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 5))
+    detail_base = cv2.dilate((edge_mask | dark | outline | highlight).astype(np.uint8), kernel, iterations=1) > 0
+    spacing = style.lane_spacing_px * _region_style_value(style, "feature_detail", "spacing_scale", 0.55)
+    min_length = max(76.0, spacing * 5.0)
+    diagnostics = LaneDiagnostics(region="feature_detail")
+    feature_boost = max(0.65, min(1.75, style.feature_lane_boost))
+
+    specs = [
+        ("brow_eye", (0.14, 0.22, 0.86, 0.44), None, 6, 0.34),
+        ("nose_bridge", (0.34, 0.32, 0.66, 0.62), 82.0, 4, 0.24),
+        ("mouth_moustache", (0.18, 0.48, 0.82, 0.68), None, 5, 0.32),
+        ("beard_jawline", (0.12, 0.58, 0.88, 0.86), None, 6, 0.38),
+        ("hair_boundary", (0.08, 0.00, 0.92, 0.30), None, 5, 0.42),
+        ("neck_collar", (0.20, 0.66, 0.80, 0.86), None, 4, 0.28),
+        ("shoulder_shirt", (0.08, 0.68, 0.92, 0.82), None, 2, 0.20),
+    ]
+
+    lanes: list[TextLane] = []
+    occupancy = np.zeros(subject.shape, dtype=bool)
+    lane_index = 0
+    for name, zone, angle_override, keep_top, max_length_fraction in specs:
+        boosted_keep_top = max(1, int(round(keep_top * feature_boost)))
+        zone_mask = _relative_zone(subject, *zone)
+        feature_mask = detail_base & zone_mask
+        if name in {"hair_boundary", "beard_jawline", "neck_collar", "shoulder_shirt"}:
+            feature_mask |= outline & zone_mask
+        if name in {"brow_eye", "mouth_moustache", "beard_jawline"}:
+            feature_mask |= dark & zone_mask
+        feature_mask = _feature_component_mask(feature_mask, min_area_px=70, keep_top=boosted_keep_top)
+        if not np.any(feature_mask):
+            continue
+
+        candidates = _scanline_candidates(
+            feature_mask,
+            "feature_detail",
+            spacing=max(8.0, spacing),
+            min_length=min_length,
+            angle_override=angle_override,
+        )
+        if name in {"brow_eye", "mouth_moustache", "hair_boundary", "beard_jawline", "neck_collar", "shoulder_shirt"}:
+            candidates.extend(_contour_feature_candidates(feature_mask, min_length=min_length * 0.85))
+        diagnostics.candidate_lanes += len(candidates)
+
+        scored: list[tuple[float, list[tuple[float, float]]]] = []
+        for points in candidates:
+            length = lane_length(points, closed=False)
+            if length < min_length:
+                diagnostics.discarded_short_lanes += 1
+                continue
+            if length > subject_diag * max_length_fraction:
+                diagnostics.discarded_curvy_lanes += 1
+                continue
+            curvature = mean_curvature(points, closed=False)
+            if curvature > style.max_lane_curvature * 1.35:
+                diagnostics.discarded_curvy_lanes += 1
+                continue
+            if _line_support_ratio(points, subject, width=3) < 0.82:
+                diagnostics.discarded_spacing_lanes += 1
+                continue
+            if _line_support_ratio(points, feature_mask, width=3) < 0.26:
+                diagnostics.discarded_spacing_lanes += 1
+                continue
+            scored.append((length / (1.0 + curvature * 18.0), points))
+        scored.sort(key=lambda item: item[0], reverse=True)
+        for _, points in scored[:boosted_keep_top]:
+            lane_mask = _line_mask(subject.shape, points, max(2, int(round(spacing * 0.42))))
+            if np.any(lane_mask & occupancy):
+                diagnostics.discarded_spacing_lanes += 1
+                continue
+            occupancy |= _line_mask(subject.shape, points, max(2, int(round(spacing * 0.70))))
+            lanes.append(_make_feature_lane(f"feature_detail_{name}_{lane_index:04d}", points))
+            lane_index += 1
+
+    lengths = [lane.length_px for lane in lanes]
+    curvatures = [lane.mean_curvature for lane in lanes]
+    diagnostics.accepted_lanes = len(lanes)
+    diagnostics.total_lane_length_px = float(sum(lengths))
+    diagnostics.mean_lane_length_px = float(np.mean(lengths)) if lengths else 0.0
+    diagnostics.mean_lane_curvature = float(np.mean(curvatures)) if curvatures else 0.0
+    diagnostics.short_lane_ratio = float(diagnostics.discarded_short_lanes / diagnostics.candidate_lanes) if diagnostics.candidate_lanes else 0.0
+    return lanes, diagnostics.to_dict()
+
+
 def generate_lanes_for_region(
     region: str,
     mask: np.ndarray,
@@ -241,6 +487,8 @@ def generate_lanes_for_region(
         "spacing_scale",
         REGION_SPACING_SCALE.get(region, 1.0),
     )
+    if region != "feature_detail":
+        spacing_scale /= max(0.50, min(1.80, style.filler_density))
     spacing = style.lane_spacing_px * spacing_scale
     min_length = max(style.min_lane_length_px, spacing * 3.2)
     max_curvature = style.max_lane_curvature
@@ -309,10 +557,21 @@ def generate_lanes(
     masks: dict[str, np.ndarray],
     contours: dict[str, list[ContourPath]],
     style: MicrographyStyleConfig,
+    feature_maps: dict[str, np.ndarray] | None = None,
 ) -> tuple[list[TextLane], dict[str, dict[str, float | int | list[str] | str]]]:
     all_lanes: list[TextLane] = []
     diagnostics: dict[str, dict[str, float | int | list[str] | str]] = {}
     occupancy = np.zeros(next(iter(masks.values())).shape, dtype=bool)
+    feature_occupancy = np.zeros_like(occupancy)
+    if feature_maps is not None:
+        feature_lanes, feature_diag = generate_feature_lanes(masks, feature_maps, style)
+        all_lanes.extend(feature_lanes)
+        diagnostics["feature_detail"] = feature_diag
+        broad_reserve_width = max(4, int(round(style.lane_spacing_px * 0.34)))
+        detail_reserve_width = max(2, int(round(style.lane_spacing_px * 0.18)))
+        for lane in feature_lanes:
+            occupancy |= _line_mask(occupancy.shape, lane.points, broad_reserve_width)
+            feature_occupancy |= _line_mask(occupancy.shape, lane.points, detail_reserve_width)
     for region in [
         "skin_or_warm",
         "clothing_primary",
@@ -324,7 +583,7 @@ def generate_lanes(
         if region not in masks:
             continue
         if region in {"dark_hair_or_shadow", "highlight", "outline_or_edge"}:
-            detail_occupancy = np.zeros_like(occupancy)
+            detail_occupancy = feature_occupancy.copy()
             lanes, diag, _ = generate_lanes_for_region(region, masks[region], contours.get(region, []), style, detail_occupancy)
         else:
             lanes, diag, occupancy = generate_lanes_for_region(region, masks[region], contours.get(region, []), style, occupancy)

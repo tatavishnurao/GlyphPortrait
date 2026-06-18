@@ -1,0 +1,161 @@
+{
+  "input": "/home/vishnu-rao/Desktop/Arjun/vishnu.jpg",
+  "subject": "Vishnu",
+  "canvas_size": [
+    1050,
+    1400
+  ],
+  "mask_source": "manual",
+  "mask_quality": {
+    "subject_coverage": 0.38534285714285715,
+    "largest_component_ratio": 1.0,
+    "subject_bbox": [
+      84,
+      272,
+      965,
+      1370
+    ],
+    "subject_bbox_area_ratio": 0.6594,
+    "mask_quality_status": "ok",
+    "mask_quality_warnings": []
+  },
+  "regions": {
+    "subject_pixels": 566454,
+    "dark_hair_or_shadow_pixels": 230270,
+    "skin_or_warm_pixels": 28397,
+    "clothing_primary_pixels": 104078,
+    "clothing_secondary_pixels": 185495,
+    "highlight_pixels": 112180,
+    "outline_or_edge_pixels": 45951,
+    "subject_coverage": 0.38534285714285715
+  },
+  "lanes": {
+    "feature_detail": {
+      "region": "feature_detail",
+      "candidate_lanes": 219,
+      "accepted_lanes": 30,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 13,
+      "discarded_spacing_lanes": 18,
+      "mean_lane_length_px": 238.26666248492623,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 7147.999874547786,
+      "notes": []
+    },
+    "skin_or_warm": {
+      "region": "skin_or_warm",
+      "candidate_lanes": 2,
+      "accepted_lanes": 2,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 0,
+      "mean_lane_length_px": 76.00001958424072,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 152.00003916848144,
+      "notes": [
+        "dropped_small_components=19"
+      ]
+    },
+    "clothing_primary": {
+      "region": "clothing_primary",
+      "candidate_lanes": 8,
+      "accepted_lanes": 3,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 5,
+      "mean_lane_length_px": 127.99999518677515,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 383.9999855603254,
+      "notes": [
+        "dropped_small_components=9"
+      ]
+    },
+    "clothing_secondary": {
+      "region": "clothing_secondary",
+      "candidate_lanes": 39,
+      "accepted_lanes": 23,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 16,
+      "mean_lane_length_px": 152.69564666700109,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 3511.999873341025,
+      "notes": [
+        "dropped_small_components=3"
+      ]
+    },
+    "dark_hair_or_shadow": {
+      "region": "dark_hair_or_shadow",
+      "candidate_lanes": 26,
+      "accepted_lanes": 10,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 16,
+      "mean_lane_length_px": 115.6,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 1156.0,
+      "notes": [
+        "dropped_small_components=15"
+      ]
+    },
+    "highlight": {
+      "region": "highlight",
+      "candidate_lanes": 13,
+      "accepted_lanes": 10,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 0,
+      "discarded_spacing_lanes": 3,
+      "mean_lane_length_px": 100.0,
+      "mean_lane_curvature": 0.0,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 1000.0,
+      "notes": [
+        "dropped_small_components=34"
+      ]
+    },
+    "outline_or_edge": {
+      "region": "outline_or_edge",
+      "candidate_lanes": 17,
+      "accepted_lanes": 4,
+      "discarded_short_lanes": 0,
+      "discarded_curvy_lanes": 1,
+      "discarded_spacing_lanes": 12,
+      "mean_lane_length_px": 227.4946309479999,
+      "mean_lane_curvature": 0.10105775627214394,
+      "short_lane_ratio": 0.0,
+      "total_lane_length_px": 909.9785237919996,
+      "notes": [
+        "dropped_small_components=41"
+      ]
+    }
+  },
+  "lane_gating": {
+    "gated_out_island_lanes": 2,
+    "gated_out_far_lanes": 0,
+    "gated_out_low_coverage_lanes": 0,
+    "lane_gating_fallback_kept_all": 0
+  },
+  "text_layout": {
+    "text_path_count": 80,
+    "used_word_count": 80,
+    "total_text_chars": 512,
+    "hero_path_count": 6,
+    "anchor_path_count": 6,
+    "dropped_text_island_groups": 0
+  },
+  "rasterizer": "pillow_fallback",
+  "outputs": {
+    "svg": "current_best.svg",
+    "png": "current_best.png",
+    "metrics": "current_best_metrics.json",
+    "regions_panel": "regions_panel.png",
+    "lane_overlay_svg": "lane_overlay.svg",
+    "lane_overlay_png": "lane_overlay.png"
+  },
+  "note": "Practical raster approximation of Digital Micrography; SVG textPath is the master representation."
+}

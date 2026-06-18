@@ -433,5 +433,57 @@
       "alpha": 192
     }
   ],
+  "flow_layout": {
+    "enabled": true,
+    "enabled_regions": [
+      "hair",
+      "skin",
+      "blue_undershirt",
+      "orange_gi",
+      "outline"
+    ],
+    "regions": {
+      "hair": {
+        "spacing_px": 24.0,
+        "min_length_px": 150.0,
+        "size": 18,
+        "alpha": 202,
+        "max_lanes": 20,
+        "curvature_limit": 0.34
+      },
+      "skin": {
+        "spacing_px": 26.0,
+        "min_length_px": 105.0,
+        "size": 15,
+        "alpha": 176,
+        "max_lanes": 14,
+        "curvature_limit": 0.28
+      },
+      "blue_undershirt": {
+        "spacing_px": 28.0,
+        "min_length_px": 120.0,
+        "size": 16,
+        "alpha": 188,
+        "max_lanes": 10,
+        "curvature_limit": 0.24
+      },
+      "orange_gi": {
+        "spacing_px": 28.0,
+        "min_length_px": 125.0,
+        "size": 17,
+        "alpha": 190,
+        "max_lanes": 16,
+        "curvature_limit": 0.24
+      },
+      "outline": {
+        "spacing_px": 22.0,
+        "min_length_px": 95.0,
+        "size": 14,
+        "alpha": 208,
+        "max_lanes": 10,
+        "curvature_limit": 0.36
+      }
+    }
+  },
   "reconstruction_strength": "hard"
 }

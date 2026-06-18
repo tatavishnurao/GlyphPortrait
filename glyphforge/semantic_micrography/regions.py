@@ -119,8 +119,13 @@ def extract_regions(prep: PreprocessResult, config: RegionConfig | None = None) 
     diagnostics["subject_coverage"] = float((masks["subject"] > 0).mean())
     return RegionResult(masks=masks, diagnostics=diagnostics)
 
-
-def save_regions_panel(region_result: RegionResult, edge_map: np.ndarray, out_path: Path) -> None:
+def save_regions_panel(
+    region_result: RegionResult,
+    edge_map: np.ndarray,
+    out_path: Path,
+    mask_source: str = "auto",
+    mask_quality: dict[str, object] | None = None,
+) -> None:
     masks = region_result.masks
     names = REGION_KEYS + ["edge_map"]
     arrays = {**masks, "edge_map": _binary(edge_map)}
@@ -131,11 +136,20 @@ def save_regions_panel(region_result: RegionResult, edge_map: np.ndarray, out_pa
     rows = int(np.ceil(len(names) / cols))
     panel = Image.new("RGB", (cols * thumb_w, rows * (thumb_h + 30)), (18, 18, 18))
     draw = ImageDraw.Draw(panel)
+    coverage = None
+    if mask_quality:
+        raw_coverage = mask_quality.get("subject_coverage")
+        if isinstance(raw_coverage, (int, float)):
+            coverage = float(raw_coverage)
     for idx, name in enumerate(names):
         x = (idx % cols) * thumb_w
         y = (idx // cols) * (thumb_h + 30)
         img = Image.fromarray(arrays[name].astype(np.uint8), "L").resize((thumb_w, thumb_h), Image.Resampling.NEAREST).convert("RGB")
         panel.paste(img, (x, y + 30))
-        draw.text((x + 8, y + 8), name, fill=(245, 245, 245))
+        label = name
+        if name == "subject":
+            coverage_text = f" coverage={coverage:.3f}" if coverage is not None else ""
+            label = f"subject ({mask_source}){coverage_text}"
+        draw.text((x + 8, y + 8), label, fill=(245, 245, 245))
     out_path.parent.mkdir(parents=True, exist_ok=True)
     panel.save(out_path)

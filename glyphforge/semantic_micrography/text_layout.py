@@ -46,6 +46,19 @@ def _lane_centroid(lane: TextLane) -> tuple[float, float]:
     return sum(xs) / len(xs), sum(ys) / len(ys)
 
 
+def _lane_angle(lane: TextLane) -> float:
+    if len(lane.points) < 2:
+        return 0.0
+    x0, y0 = lane.points[0]
+    x1, y1 = lane.points[-1]
+    angle = math.degrees(math.atan2(y1 - y0, x1 - x0))
+    while angle <= -90.0:
+        angle += 180.0
+    while angle > 90.0:
+        angle -= 180.0
+    return float(angle)
+
+
 def _select_anchor_lanes(lanes: list[TextLane], style: MicrographyStyleConfig) -> set[str]:
     if not lanes or style.anchor_lane_count <= 0:
         return set()
@@ -58,6 +71,7 @@ def _select_anchor_lanes(lanes: list[TextLane], style: MicrographyStyleConfig) -
     bbox_diag = math.hypot(max_x - min_x, max_y - min_y)
     min_sep = max(42.0, bbox_diag * 0.11)
     region_priority = {
+        "feature_detail": 3.6,
         "clothing_primary": 1.6,
         "outline_or_edge": 1.35,
         "skin_or_warm": 1.25,
@@ -67,12 +81,29 @@ def _select_anchor_lanes(lanes: list[TextLane], style: MicrographyStyleConfig) -
     for lane in lanes:
         if lane.region not in style.anchor_regions:
             continue
-        if lane.length_px < style.anchor_min_length_px:
+        min_anchor_length = style.anchor_min_length_px
+        if lane.region == "feature_detail":
+            min_anchor_length = max(style.min_lane_length_px * 1.15, style.anchor_min_length_px * 0.48)
+        if lane.length_px < min_anchor_length:
             continue
+        if lane.region == "feature_detail" and lane.length_px > max(190.0, bbox_diag * 0.24):
+            continue
+        if lane.region == "feature_detail":
+            abs_angle = abs(_lane_angle(lane))
+            if 34.0 < abs_angle < 60.0:
+                continue
         cx, cy = _lane_centroid(lane)
         y_norm = (cy - min_y) / max(max_y - min_y, 1.0)
-        centrality = 1.0 - min(1.0, abs(y_norm - 0.58))
-        score = lane.length_px * region_priority.get(lane.region, 1.0) * (1.0 + centrality * 0.45)
+        if lane.region == "feature_detail" and y_norm > 0.82:
+            continue
+        if lane.region == "feature_detail":
+            zone_weight = 1.35 if y_norm <= 0.62 else 0.82
+            centrality = 1.0 - min(1.0, abs(y_norm - 0.42))
+        else:
+            zone_weight = 1.0
+            centrality = 1.0 - min(1.0, abs(y_norm - 0.58))
+        effective_length = min(lane.length_px, 260.0) if lane.region == "feature_detail" else lane.length_px
+        score = effective_length * region_priority.get(lane.region, 1.0) * zone_weight * (1.0 + centrality * 0.45)
         ranked.append((score, lane, (cx, cy)))
     ranked.sort(key=lambda item: item[0], reverse=True)
     selected: list[tuple[float, float]] = []
@@ -90,33 +121,15 @@ def _select_anchor_lanes(lanes: list[TextLane], style: MicrographyStyleConfig) -
 def _fit_text_to_lane(words: list[str], length_px: float, font_size: int, start: int) -> tuple[str, dict[str, int]]:
     if not words:
         words = ["Legacy"]
-    avg_char_px = max(4.0, font_size * 0.57)
-    target_chars = max(8, int(length_px / avg_char_px))
-    pieces: list[str] = []
-    counts: dict[str, int] = {}
-    idx = start
-    max_pieces = max(4, min(26, int(target_chars / 4)))
-    while len("  ".join(pieces)) < target_chars and len(pieces) < max_pieces:
-        word = words[idx % len(words)]
-        pieces.append(word)
-        counts[word] = counts.get(word, 0) + 1
-        idx += 1
-    if not pieces:
-        pieces = [words[start % len(words)]]
-    return "  ".join(pieces), counts
+    word = words[start % len(words)]
+    return word, {word: 1}
 
 
 def _anchor_text(anchor_words: list[str], lane: TextLane, cursor: int) -> tuple[str, dict[str, int]]:
     if not anchor_words:
         anchor_words = ["CHAMPION"]
     phrase = anchor_words[cursor % len(anchor_words)]
-    counts = {phrase: 1}
-    if lane.length_px > 440:
-        text = f"{phrase}   {phrase}"
-        counts[phrase] = 2
-    else:
-        text = phrase
-    return text, counts
+    return phrase, {phrase: 1}
 
 
 def assign_text_to_lanes(
@@ -129,6 +142,9 @@ def assign_text_to_lanes(
     region_cursors: dict[str, int] = {}
     anchor_cursor = 0
     anchor_lane_ids = _select_anchor_lanes(lanes, style)
+    lane_ys = [point[1] for lane in lanes for point in lane.points]
+    global_min_y = min(lane_ys) if lane_ys else 0.0
+    global_max_y = max(lane_ys) if lane_ys else 1.0
     for lane in lanes:
         is_anchor = lane.id in anchor_lane_ids and bool(profile.anchor_words)
         region_style = _region_style(style, lane.region)
@@ -141,7 +157,7 @@ def assign_text_to_lanes(
         start_offset = "0%"
 
         hero_threshold = max(230.0, style.min_lane_length_px * 2.6)
-        is_hero = lane.length_px >= hero_threshold and (lane.order_index % 10 == 0)
+        is_hero = lane.source != "feature" and lane.length_px >= hero_threshold and (lane.order_index % 10 == 0)
         if lane.region == "outline_or_edge":
             font_size = max(style.min_font_size, font_size - 1)
         if is_anchor:
@@ -160,13 +176,29 @@ def assign_text_to_lanes(
             opacity = max(opacity, 0.95)
             letter_spacing = max(letter_spacing, 0.42)
             start_offset = f"{(lane.order_index % 3) * 2}%"
+        elif lane.source == "feature":
+            _, lane_cy = _lane_centroid(lane)
+            y_norm = (lane_cy - global_min_y) / max(global_max_y - global_min_y, 1.0)
+            if y_norm <= 0.76:
+                font_size = max(font_size, style.hero_font_size - 7)
+                font_weight = max(font_weight, 660)
+                opacity = max(opacity, 0.96)
+                letter_spacing = max(letter_spacing, 0.34)
+            else:
+                font_size = max(font_size, style.default_font_size + 1)
+                font_weight = max(font_weight, 620)
+                opacity = min(max(opacity, 0.88), 0.93)
+                letter_spacing = max(letter_spacing, 0.28)
 
         cursor = region_cursors.get(lane.region, lane.order_index)
         if is_anchor:
             text, counts = _anchor_text(profile.anchor_words, lane, anchor_cursor)
             anchor_cursor += 1
         else:
-            words = profile.hero_words if is_hero else profile.words_for_region(lane.region)
+            if lane.source == "feature":
+                words = profile.anchor_words or profile.hero_words or profile.texture_words
+            else:
+                words = profile.hero_words if is_hero else profile.words_for_region(lane.region)
             text, counts = _fit_text_to_lane(words, lane.length_px, font_size, cursor)
         region_cursors[lane.region] = cursor + max(1, len(counts))
         for word, count in counts.items():

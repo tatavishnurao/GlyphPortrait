@@ -1,0 +1,1066 @@
+{
+  "seed": 23,
+  "candidate_count": 32,
+  "best_index": 1,
+  "best_score": 143.812415,
+  "best_spec": {
+    "index": 1,
+    "lane_spacing_px": 29.927,
+    "anchor_font_scale": 1.867,
+    "filler_density": 1.115,
+    "min_lane_length_px": 68.942,
+    "feature_lane_boost": 1.314
+  },
+  "top_candidates": [
+    {
+      "score": 143.812415,
+      "candidate_id": 1,
+      "lane_count": 80,
+      "face_feature_coverage": 0.16191626014933733,
+      "face_text_coverage": 0.35865433246863426,
+      "identity_edge_alignment": 0.10292882813287206,
+      "identity_edge_recall": 0.18440847274040198,
+      "text_coverage_subject": 0.2876508948652494,
+      "microtext_to_lane_ratio": 6.4,
+      "anchor_visibility_score": 0.6841025121191185,
+      "anchor_feature_lane_ratio": 1.0,
+      "source_pixel_leakage": 0.0,
+      "background_cleanliness": 1.0,
+      "short_lane_ratio": 0.0,
+      "best_config_parameters": {
+        "index": 1,
+        "lane_spacing_px": 29.927,
+        "anchor_font_scale": 1.867,
+        "filler_density": 1.115,
+        "min_lane_length_px": 68.942,
+        "feature_lane_boost": 1.314
+      }
+    },
+    {
+      "score": 137.713299,
+      "candidate_id": 10,
+      "lane_count": 84,
+      "face_feature_coverage": 0.1468764785538316,
+      "face_text_coverage": 0.3757824438897318,
+      "identity_edge_alignment": 0.09538091270943257,
+      "identity_edge_recall": 0.15501263689974726,
+      "text_coverage_subject": 0.30192389849837764,
+      "microtext_to_lane_ratio": 6.464285714285714,
+      "anchor_visibility_score": 0.7312820719941193,
+      "anchor_feature_lane_ratio": 1.0,
+      "source_pixel_leakage": 0.0,
+      "background_cleanliness": 1.0,
+      "short_lane_ratio": 0.0,
+      "best_config_parameters": {
+        "index": 10,
+        "lane_spacing_px": 23.07,
+        "anchor_font_scale": 1.692,
+        "filler_density": 1.072,
+        "min_lane_length_px": 78.832,
+        "feature_lane_boost": 1.159
+      }
+    },
+    {
+      "score": 132.764531,
+      "candidate_id": 17,
+      "lane_count": 64,
+      "face_feature_coverage": 0.14800221885043968,
+      "face_text_coverage": 0.3215973547822209,
+      "identity_edge_alignment": 0.10744272354810855,
+      "identity_edge_recall": 0.17595378505235287,
+      "text_coverage_subject": 0.25322091467268304,
+      "microtext_to_lane_ratio": 6.375,
+      "anchor_visibility_score": 0.7466154326030725,
+      "anchor_feature_lane_ratio": 1.0,
+      "source_pixel_leakage": 0.0,
+      "background_cleanliness": 1.0,
+      "short_lane_ratio": 0.0,
+      "best_config_parameters": {
+        "index": 17,
+        "lane_spacing_px": 22.201,
+        "anchor_font_scale": 1.461,
+        "filler_density": 0.86,
+        "min_lane_length_px": 73.466,
+        "feature_lane_boost": 1.554
+      }
+    },
+    {
+      "score": 131.695332,
+      "candidate_id": 20,
+      "lane_count": 76,
+      "face_feature_coverage": 0.14423615529777734,
+      "face_text_coverage": 0.3442454005079427,
+      "identity_edge_alignment": 0.1154701757031898,
+      "identity_edge_recall": 0.18428812131423758,
+      "text_coverage_subject": 0.281217892361957,
+      "microtext_to_lane_ratio": 6.5394736842105265,
+      "anchor_visibility_score": 0.7294302014493743,
+      "anchor_feature_lane_ratio": 0.6666666666666666,
+      "source_pixel_leakage": 0.0,
+      "background_cleanliness": 1.0,
+      "short_lane_ratio": 0.0,
+      "best_config_parameters": {
+        "index": 20,
+        "lane_spacing_px": 24.856,
+        "anchor_font_scale": 1.585,
+        "filler_density": 1.115,
+        "min_lane_length_px": 98.15,
+        "feature_lane_boost": 1.527
+      }
+    },
+    {
+      "score": 129.457589,
+      "candidate_id": 7,
+      "lane_count": 55,
+      "face_feature_coverage": 0.1641187955122662,
+      "face_text_coverage": 0.2769864965547996,
+      "identity_edge_alignment": 0.10482802041222082,
+      "identity_edge_recall": 0.19036586833553978,
+      "text_coverage_subject": 0.22609955971711737,
+      "microtext_to_lane_ratio": 6.163636363636364,
+      "anchor_visibility_score": 0.7017948758831133,
+      "anchor_feature_lane_ratio": 1.0,
+      "source_pixel_leakage": 0.0,
+      "background_cleanliness": 1.0,
+      "short_lane_ratio": 0.0,
+      "best_config_parameters": {
+        "index": 7,
+        "lane_spacing_px": 23.48,
+        "anchor_font_scale": 1.466,
+        "filler_density": 0.864,
+        "min_lane_length_px": 94.317,
+        "feature_lane_boost": 1.313
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "index": 0,
+      "candidate_id": 0,
+      "score": 97.96242,
+      "spec": {
+        "index": 0,
+        "lane_spacing_px": 24.0,
+        "anchor_font_scale": 1.55,
+        "filler_density": 1.0,
+        "min_lane_length_px": 80.0,
+        "feature_lane_boost": 1.0
+      },
+      "metrics": {
+        "lane_count": 70,
+        "face_feature_coverage": 0.10352188123711789,
+        "face_text_coverage": 0.31710527031363017,
+        "identity_edge_alignment": 0.13582516876362585,
+        "identity_edge_recall": 0.15558430617402816,
+        "text_coverage_subject": 0.2619206502204945,
+        "microtext_to_lane_ratio": 6.628571428571429,
+        "anchor_visibility_score": 0.5565323417670622,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.17615176572121005,
+        "word_repetition_ratio": 0.2
+      }
+    },
+    {
+      "index": 1,
+      "candidate_id": 1,
+      "score": 143.812415,
+      "spec": {
+        "index": 1,
+        "lane_spacing_px": 29.927,
+        "anchor_font_scale": 1.867,
+        "filler_density": 1.115,
+        "min_lane_length_px": 68.942,
+        "feature_lane_boost": 1.314
+      },
+      "metrics": {
+        "lane_count": 80,
+        "face_feature_coverage": 0.16191626014933733,
+        "face_text_coverage": 0.35865433246863426,
+        "identity_edge_alignment": 0.10292882813287206,
+        "identity_edge_recall": 0.18440847274040198,
+        "text_coverage_subject": 0.2876508948652494,
+        "microtext_to_lane_ratio": 6.4,
+        "anchor_visibility_score": 0.6841025121191185,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.1625
+      }
+    },
+    {
+      "index": 2,
+      "candidate_id": 2,
+      "score": 74.564645,
+      "spec": {
+        "index": 2,
+        "lane_spacing_px": 24.635,
+        "anchor_font_scale": 1.672,
+        "filler_density": 0.658,
+        "min_lane_length_px": 73.28,
+        "feature_lane_boost": 1.211
+      },
+      "metrics": {
+        "lane_count": 32,
+        "face_feature_coverage": 0.1388467416072526,
+        "face_text_coverage": 0.1732171699867848,
+        "identity_edge_alignment": 0.11270612196937056,
+        "identity_edge_recall": 0.17315561439403057,
+        "text_coverage_subject": 0.1608250625823103,
+        "microtext_to_lane_ratio": 6.0,
+        "anchor_visibility_score": 0.639694742514955,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.007518796992481203,
+        "low_body_anchor_ratio": 0.1562500021598659,
+        "word_repetition_ratio": 0.25
+      }
+    },
+    {
+      "index": 3,
+      "candidate_id": 3,
+      "score": 74.231685,
+      "spec": {
+        "index": 3,
+        "lane_spacing_px": 22.494,
+        "anchor_font_scale": 1.638,
+        "filler_density": 0.595,
+        "min_lane_length_px": 69.031,
+        "feature_lane_boost": 1.397
+      },
+      "metrics": {
+        "lane_count": 32,
+        "face_feature_coverage": 0.12483752902724074,
+        "face_text_coverage": 0.16854018131488643,
+        "identity_edge_alignment": 0.12191243737747767,
+        "identity_edge_recall": 0.16840173306053677,
+        "text_coverage_subject": 0.14606305189830066,
+        "microtext_to_lane_ratio": 6.21875,
+        "anchor_visibility_score": 0.7194871737618483,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.006191950464396285,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.25
+      }
+    },
+    {
+      "index": 4,
+      "candidate_id": 4,
+      "score": 100.3319,
+      "spec": {
+        "index": 4,
+        "lane_spacing_px": 24.608,
+        "anchor_font_scale": 1.664,
+        "filler_density": 1.021,
+        "min_lane_length_px": 79.96,
+        "feature_lane_boost": 0.94
+      },
+      "metrics": {
+        "lane_count": 77,
+        "face_feature_coverage": 0.11297646822094964,
+        "face_text_coverage": 0.35486379630082826,
+        "identity_edge_alignment": 0.08469721767594109,
+        "identity_edge_recall": 0.10587916716813094,
+        "text_coverage_subject": 0.28914969264935897,
+        "microtext_to_lane_ratio": 6.545454545454546,
+        "anchor_visibility_score": 0.5709034883244936,
+        "anchor_feature_lane_ratio": 0.7142857142857143,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.17300381725392794,
+        "word_repetition_ratio": 0.16883116883116883
+      }
+    },
+    {
+      "index": 5,
+      "candidate_id": 5,
+      "score": 95.911121,
+      "spec": {
+        "index": 5,
+        "lane_spacing_px": 28.43,
+        "anchor_font_scale": 1.7,
+        "filler_density": 0.975,
+        "min_lane_length_px": 90.44,
+        "feature_lane_boost": 1.58
+      },
+      "metrics": {
+        "lane_count": 59,
+        "face_feature_coverage": 0.11523882553200746,
+        "face_text_coverage": 0.25956743293143864,
+        "identity_edge_alignment": 0.08775365738555922,
+        "identity_edge_recall": 0.11189673847635094,
+        "text_coverage_subject": 0.2183372347975299,
+        "microtext_to_lane_ratio": 6.3559322033898304,
+        "anchor_visibility_score": 0.6793846730623667,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.1694915254237288
+      }
+    },
+    {
+      "index": 6,
+      "candidate_id": 6,
+      "score": 103.633013,
+      "spec": {
+        "index": 6,
+        "lane_spacing_px": 23.991,
+        "anchor_font_scale": 1.779,
+        "filler_density": 0.801,
+        "min_lane_length_px": 88.482,
+        "feature_lane_boost": 1.362
+      },
+      "metrics": {
+        "lane_count": 48,
+        "face_feature_coverage": 0.1341072118077649,
+        "face_text_coverage": 0.23469237922764427,
+        "identity_edge_alignment": 0.12360347938928203,
+        "identity_edge_recall": 0.18341557347454568,
+        "text_coverage_subject": 0.19654905782287704,
+        "microtext_to_lane_ratio": 6.25,
+        "anchor_visibility_score": 0.7312820134420197,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.20833333333333334
+      }
+    },
+    {
+      "index": 7,
+      "candidate_id": 7,
+      "score": 129.457589,
+      "spec": {
+        "index": 7,
+        "lane_spacing_px": 23.48,
+        "anchor_font_scale": 1.466,
+        "filler_density": 0.864,
+        "min_lane_length_px": 94.317,
+        "feature_lane_boost": 1.313
+      },
+      "metrics": {
+        "lane_count": 55,
+        "face_feature_coverage": 0.1641187955122662,
+        "face_text_coverage": 0.2769864965547996,
+        "identity_edge_alignment": 0.10482802041222082,
+        "identity_edge_recall": 0.19036586833553978,
+        "text_coverage_subject": 0.22609955971711737,
+        "microtext_to_lane_ratio": 6.163636363636364,
+        "anchor_visibility_score": 0.7017948758831133,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2
+      }
+    },
+    {
+      "index": 8,
+      "candidate_id": 8,
+      "score": 112.544824,
+      "spec": {
+        "index": 8,
+        "lane_spacing_px": 24.885,
+        "anchor_font_scale": 1.725,
+        "filler_density": 0.689,
+        "min_lane_length_px": 72.742,
+        "feature_lane_boost": 1.126
+      },
+      "metrics": {
+        "lane_count": 38,
+        "face_feature_coverage": 0.17520217099288118,
+        "face_text_coverage": 0.21475535542394728,
+        "identity_edge_alignment": 0.09375776011919543,
+        "identity_edge_recall": 0.18176074136478518,
+        "text_coverage_subject": 0.18297337471356898,
+        "microtext_to_lane_ratio": 6.131578947368421,
+        "anchor_visibility_score": 0.8026129275093355,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2631578947368421
+      }
+    },
+    {
+      "index": 9,
+      "candidate_id": 9,
+      "score": 60.791143,
+      "spec": {
+        "index": 9,
+        "lane_spacing_px": 28.776,
+        "anchor_font_scale": 1.517,
+        "filler_density": 0.649,
+        "min_lane_length_px": 69.544,
+        "feature_lane_boost": 0.927
+      },
+      "metrics": {
+        "lane_count": 24,
+        "face_feature_coverage": 0.1307272717384802,
+        "face_text_coverage": 0.14643325230178542,
+        "identity_edge_alignment": 0.10098593893002746,
+        "identity_edge_recall": 0.14607654350704055,
+        "text_coverage_subject": 0.12396770081948402,
+        "microtext_to_lane_ratio": 6.416666666666667,
+        "anchor_visibility_score": 0.5504273720615114,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.017964071856287425,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.25
+      }
+    },
+    {
+      "index": 10,
+      "candidate_id": 10,
+      "score": 137.713299,
+      "spec": {
+        "index": 10,
+        "lane_spacing_px": 23.07,
+        "anchor_font_scale": 1.692,
+        "filler_density": 1.072,
+        "min_lane_length_px": 78.832,
+        "feature_lane_boost": 1.159
+      },
+      "metrics": {
+        "lane_count": 84,
+        "face_feature_coverage": 0.1468764785538316,
+        "face_text_coverage": 0.3757824438897318,
+        "identity_edge_alignment": 0.09538091270943257,
+        "identity_edge_recall": 0.15501263689974726,
+        "text_coverage_subject": 0.30192389849837764,
+        "microtext_to_lane_ratio": 6.464285714285714,
+        "anchor_visibility_score": 0.7312820719941193,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.16666666666666666
+      }
+    },
+    {
+      "index": 11,
+      "candidate_id": 11,
+      "score": 106.92526,
+      "spec": {
+        "index": 11,
+        "lane_spacing_px": 23.206,
+        "anchor_font_scale": 1.568,
+        "filler_density": 1.047,
+        "min_lane_length_px": 87.56,
+        "feature_lane_boost": 1.081
+      },
+      "metrics": {
+        "lane_count": 77,
+        "face_feature_coverage": 0.12023939655969415,
+        "face_text_coverage": 0.3627140674030205,
+        "identity_edge_alignment": 0.10902553201112644,
+        "identity_edge_recall": 0.14505355638464315,
+        "text_coverage_subject": 0.2953302474693444,
+        "microtext_to_lane_ratio": 6.376623376623376,
+        "anchor_visibility_score": 0.6458485902751617,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.3314111183458715,
+        "word_repetition_ratio": 0.16883116883116883
+      }
+    },
+    {
+      "index": 12,
+      "candidate_id": 12,
+      "score": 122.115603,
+      "spec": {
+        "index": 12,
+        "lane_spacing_px": 21.291,
+        "anchor_font_scale": 1.79,
+        "filler_density": 1.004,
+        "min_lane_length_px": 98.743,
+        "feature_lane_boost": 1.067
+      },
+      "metrics": {
+        "lane_count": 66,
+        "face_feature_coverage": 0.12695848900635745,
+        "face_text_coverage": 0.3395439392209007,
+        "identity_edge_alignment": 0.10670379096166202,
+        "identity_edge_recall": 0.14989770128776025,
+        "text_coverage_subject": 0.26744801872702817,
+        "microtext_to_lane_ratio": 6.46969696969697,
+        "anchor_visibility_score": 0.7495359831954881,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.18181818181818182
+      }
+    },
+    {
+      "index": 13,
+      "candidate_id": 13,
+      "score": 102.799543,
+      "spec": {
+        "index": 13,
+        "lane_spacing_px": 25.92,
+        "anchor_font_scale": 1.853,
+        "filler_density": 0.936,
+        "min_lane_length_px": 103.419,
+        "feature_lane_boost": 1.017
+      },
+      "metrics": {
+        "lane_count": 50,
+        "face_feature_coverage": 0.13029220302481523,
+        "face_text_coverage": 0.2515023466518743,
+        "identity_edge_alignment": 0.10259621003422656,
+        "identity_edge_recall": 0.14791190275604765,
+        "text_coverage_subject": 0.20820048936012456,
+        "microtext_to_lane_ratio": 6.42,
+        "anchor_visibility_score": 0.7368986226673633,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.007936507936507936,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.18
+      }
+    },
+    {
+      "index": 14,
+      "candidate_id": 14,
+      "score": 85.50728,
+      "spec": {
+        "index": 14,
+        "lane_spacing_px": 30.456,
+        "anchor_font_scale": 1.452,
+        "filler_density": 0.83,
+        "min_lane_length_px": 66.535,
+        "feature_lane_boost": 1.467
+      },
+      "metrics": {
+        "lane_count": 40,
+        "face_feature_coverage": 0.12767907156336503,
+        "face_text_coverage": 0.21189749781106054,
+        "identity_edge_alignment": 0.0874667234586306,
+        "identity_edge_recall": 0.12357082681429775,
+        "text_coverage_subject": 0.1783198635723289,
+        "microtext_to_lane_ratio": 6.2,
+        "anchor_visibility_score": 0.6758462114262823,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2
+      }
+    },
+    {
+      "index": 15,
+      "candidate_id": 15,
+      "score": 123.020978,
+      "spec": {
+        "index": 15,
+        "lane_spacing_px": 27.417,
+        "anchor_font_scale": 1.879,
+        "filler_density": 1.063,
+        "min_lane_length_px": 103.553,
+        "feature_lane_boost": 1.277
+      },
+      "metrics": {
+        "lane_count": 59,
+        "face_feature_coverage": 0.1547702565273903,
+        "face_text_coverage": 0.3012497348800026,
+        "identity_edge_alignment": 0.09703433008889982,
+        "identity_edge_recall": 0.16617523167649537,
+        "text_coverage_subject": 0.24725220406246579,
+        "microtext_to_lane_ratio": 6.372881355932203,
+        "anchor_visibility_score": 0.7093269464537757,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.006644518272425249,
+        "low_body_anchor_ratio": 0.16524216667966554,
+        "word_repetition_ratio": 0.2033898305084746
+      }
+    },
+    {
+      "index": 16,
+      "candidate_id": 16,
+      "score": 77.913046,
+      "spec": {
+        "index": 16,
+        "lane_spacing_px": 30.596,
+        "anchor_font_scale": 1.774,
+        "filler_density": 0.788,
+        "min_lane_length_px": 104.576,
+        "feature_lane_boost": 1.164
+      },
+      "metrics": {
+        "lane_count": 35,
+        "face_feature_coverage": 0.13063481963682638,
+        "face_text_coverage": 0.18665807405957177,
+        "identity_edge_alignment": 0.0781815911077807,
+        "identity_edge_recall": 0.11300998916837164,
+        "text_coverage_subject": 0.16247038594484284,
+        "microtext_to_lane_ratio": 6.228571428571429,
+        "anchor_visibility_score": 0.7627350778520886,
+        "anchor_feature_lane_ratio": 0.8,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.008928571428571428,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2
+      }
+    },
+    {
+      "index": 17,
+      "candidate_id": 17,
+      "score": 132.764531,
+      "spec": {
+        "index": 17,
+        "lane_spacing_px": 22.201,
+        "anchor_font_scale": 1.461,
+        "filler_density": 0.86,
+        "min_lane_length_px": 73.466,
+        "feature_lane_boost": 1.554
+      },
+      "metrics": {
+        "lane_count": 64,
+        "face_feature_coverage": 0.14800221885043968,
+        "face_text_coverage": 0.3215973547822209,
+        "identity_edge_alignment": 0.10744272354810855,
+        "identity_edge_recall": 0.17595378505235287,
+        "text_coverage_subject": 0.25322091467268304,
+        "microtext_to_lane_ratio": 6.375,
+        "anchor_visibility_score": 0.7466154326030725,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.171875
+      }
+    },
+    {
+      "index": 18,
+      "candidate_id": 18,
+      "score": 58.854824,
+      "spec": {
+        "index": 18,
+        "lane_spacing_px": 30.197,
+        "anchor_font_scale": 1.526,
+        "filler_density": 0.642,
+        "min_lane_length_px": 86.759,
+        "feature_lane_boost": 1.019
+      },
+      "metrics": {
+        "lane_count": 23,
+        "face_feature_coverage": 0.12936496282881677,
+        "face_text_coverage": 0.15006063770196706,
+        "identity_edge_alignment": 0.08411981082501313,
+        "identity_edge_recall": 0.12041160187748225,
+        "text_coverage_subject": 0.12519110113089502,
+        "microtext_to_lane_ratio": 5.782608695652174,
+        "anchor_visibility_score": 0.645769200830818,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.005649717514124294,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2608695652173913
+      }
+    },
+    {
+      "index": 19,
+      "candidate_id": 19,
+      "score": 79.344628,
+      "spec": {
+        "index": 19,
+        "lane_spacing_px": 25.901,
+        "anchor_font_scale": 1.804,
+        "filler_density": 0.732,
+        "min_lane_length_px": 82.47,
+        "feature_lane_boost": 1.531
+      },
+      "metrics": {
+        "lane_count": 35,
+        "face_feature_coverage": 0.12959065472403047,
+        "face_text_coverage": 0.17145242251698128,
+        "identity_edge_alignment": 0.10864912501573713,
+        "identity_edge_recall": 0.15579492116981586,
+        "text_coverage_subject": 0.14893354094065892,
+        "microtext_to_lane_ratio": 6.114285714285714,
+        "anchor_visibility_score": 0.7371794925895155,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2
+      }
+    },
+    {
+      "index": 20,
+      "candidate_id": 20,
+      "score": 131.695332,
+      "spec": {
+        "index": 20,
+        "lane_spacing_px": 24.856,
+        "anchor_font_scale": 1.585,
+        "filler_density": 1.115,
+        "min_lane_length_px": 98.15,
+        "feature_lane_boost": 1.527
+      },
+      "metrics": {
+        "lane_count": 76,
+        "face_feature_coverage": 0.14423615529777734,
+        "face_text_coverage": 0.3442454005079427,
+        "identity_edge_alignment": 0.1154701757031898,
+        "identity_edge_recall": 0.18428812131423758,
+        "text_coverage_subject": 0.281217892361957,
+        "microtext_to_lane_ratio": 6.5394736842105265,
+        "anchor_visibility_score": 0.7294302014493743,
+        "anchor_feature_lane_ratio": 0.6666666666666666,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.18421052631578946
+      }
+    },
+    {
+      "index": 21,
+      "candidate_id": 21,
+      "score": 127.752558,
+      "spec": {
+        "index": 21,
+        "lane_spacing_px": 27.423,
+        "anchor_font_scale": 1.618,
+        "filler_density": 0.996,
+        "min_lane_length_px": 98.793,
+        "feature_lane_boost": 1.348
+      },
+      "metrics": {
+        "lane_count": 58,
+        "face_feature_coverage": 0.16408072699982054,
+        "face_text_coverage": 0.2940629435661495,
+        "identity_edge_alignment": 0.11172980676808857,
+        "identity_edge_recall": 0.2028523288000963,
+        "text_coverage_subject": 0.24894695774061087,
+        "microtext_to_lane_ratio": 6.120689655172414,
+        "anchor_visibility_score": 0.6471672408213119,
+        "anchor_feature_lane_ratio": 0.8571428571428571,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.15434193633149276,
+        "word_repetition_ratio": 0.1896551724137931
+      }
+    },
+    {
+      "index": 22,
+      "candidate_id": 22,
+      "score": 90.6697,
+      "spec": {
+        "index": 22,
+        "lane_spacing_px": 22.678,
+        "anchor_font_scale": 1.563,
+        "filler_density": 0.826,
+        "min_lane_length_px": 96.467,
+        "feature_lane_boost": 1.29
+      },
+      "metrics": {
+        "lane_count": 48,
+        "face_feature_coverage": 0.10953942538299642,
+        "face_text_coverage": 0.23623415398169448,
+        "identity_edge_alignment": 0.12094131665177242,
+        "identity_edge_recall": 0.14658803706823925,
+        "text_coverage_subject": 0.1967714942431336,
+        "microtext_to_lane_ratio": 6.354166666666667,
+        "anchor_visibility_score": 0.722435898686783,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.16666666666666666
+      }
+    },
+    {
+      "index": 23,
+      "candidate_id": 23,
+      "score": 92.868701,
+      "spec": {
+        "index": 23,
+        "lane_spacing_px": 25.967,
+        "anchor_font_scale": 1.81,
+        "filler_density": 0.645,
+        "min_lane_length_px": 90.85,
+        "feature_lane_boost": 1.133
+      },
+      "metrics": {
+        "lane_count": 29,
+        "face_feature_coverage": 0.1577042511651684,
+        "face_text_coverage": 0.1729017451693777,
+        "identity_edge_alignment": 0.10224666793109989,
+        "identity_edge_recall": 0.17842098928872308,
+        "text_coverage_subject": 0.15051707640867573,
+        "microtext_to_lane_ratio": 6.172413793103448,
+        "anchor_visibility_score": 0.7696153896390495,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.008438818565400843,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2413793103448276
+      }
+    },
+    {
+      "index": 24,
+      "candidate_id": 24,
+      "score": 55.94662,
+      "spec": {
+        "index": 24,
+        "lane_spacing_px": 26.067,
+        "anchor_font_scale": 1.814,
+        "filler_density": 0.729,
+        "min_lane_length_px": 103.661,
+        "feature_lane_boost": 0.955
+      },
+      "metrics": {
+        "lane_count": 31,
+        "face_feature_coverage": 0.09411080112465263,
+        "face_text_coverage": 0.1646517546865058,
+        "identity_edge_alignment": 0.09898873158046807,
+        "identity_edge_recall": 0.10308099650980865,
+        "text_coverage_subject": 0.14864755125747192,
+        "microtext_to_lane_ratio": 6.354838709677419,
+        "anchor_visibility_score": 0.712115332135407,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.009302325581395349,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.1935483870967742
+      }
+    },
+    {
+      "index": 25,
+      "candidate_id": 25,
+      "score": 100.04651,
+      "spec": {
+        "index": 25,
+        "lane_spacing_px": 26.095,
+        "anchor_font_scale": 1.678,
+        "filler_density": 0.721,
+        "min_lane_length_px": 88.034,
+        "feature_lane_boost": 1.23
+      },
+      "metrics": {
+        "lane_count": 35,
+        "face_feature_coverage": 0.15700270286438364,
+        "face_text_coverage": 0.21361058087111634,
+        "identity_edge_alignment": 0.08638874937217479,
+        "identity_edge_recall": 0.15007822842700685,
+        "text_coverage_subject": 0.1758501131601154,
+        "microtext_to_lane_ratio": 6.314285714285714,
+        "anchor_visibility_score": 0.695054938632112,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.22857142857142856
+      }
+    },
+    {
+      "index": 26,
+      "candidate_id": 26,
+      "score": 101.097885,
+      "spec": {
+        "index": 26,
+        "lane_spacing_px": 24.908,
+        "anchor_font_scale": 1.76,
+        "filler_density": 0.582,
+        "min_lane_length_px": 80.687,
+        "feature_lane_boost": 1.45
+      },
+      "metrics": {
+        "lane_count": 32,
+        "face_feature_coverage": 0.1711913812887823,
+        "face_text_coverage": 0.17879964541899837,
+        "identity_edge_alignment": 0.0968915291389361,
+        "identity_edge_recall": 0.18353592490071008,
+        "text_coverage_subject": 0.15789102027702162,
+        "microtext_to_lane_ratio": 5.90625,
+        "anchor_visibility_score": 0.7607692222980171,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.003367003367003367,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.25
+      }
+    },
+    {
+      "index": 27,
+      "candidate_id": 27,
+      "score": 91.67399,
+      "spec": {
+        "index": 27,
+        "lane_spacing_px": 21.658,
+        "anchor_font_scale": 1.829,
+        "filler_density": 0.702,
+        "min_lane_length_px": 92.845,
+        "feature_lane_boost": 1.021
+      },
+      "metrics": {
+        "lane_count": 36,
+        "face_feature_coverage": 0.13494743826103034,
+        "face_text_coverage": 0.21037747649269356,
+        "identity_edge_alignment": 0.09887563472233417,
+        "identity_edge_recall": 0.14764111204717775,
+        "text_coverage_subject": 0.17911074862212994,
+        "microtext_to_lane_ratio": 6.444444444444445,
+        "anchor_visibility_score": 0.7312820264012552,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.2222222222222222
+      }
+    },
+    {
+      "index": 28,
+      "candidate_id": 28,
+      "score": 89.695518,
+      "spec": {
+        "index": 28,
+        "lane_spacing_px": 24.905,
+        "anchor_font_scale": 1.622,
+        "filler_density": 0.629,
+        "min_lane_length_px": 93.584,
+        "feature_lane_boost": 1.236
+      },
+      "metrics": {
+        "lane_count": 35,
+        "face_feature_coverage": 0.17293981368182337,
+        "face_text_coverage": 0.19657492155167255,
+        "identity_edge_alignment": 0.08754716981132075,
+        "identity_edge_recall": 0.16752918522084487,
+        "text_coverage_subject": 0.16729160708548266,
+        "microtext_to_lane_ratio": 5.828571428571428,
+        "anchor_visibility_score": 0.6757691964555769,
+        "anchor_feature_lane_ratio": 0.75,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.007518796992481203,
+        "low_body_anchor_ratio": 0.2897443440136417,
+        "word_repetition_ratio": 0.22857142857142856
+      }
+    },
+    {
+      "index": 29,
+      "candidate_id": 29,
+      "score": 119.487679,
+      "spec": {
+        "index": 29,
+        "lane_spacing_px": 27.436,
+        "anchor_font_scale": 1.677,
+        "filler_density": 0.914,
+        "min_lane_length_px": 86.645,
+        "feature_lane_boost": 1.108
+      },
+      "metrics": {
+        "lane_count": 56,
+        "face_feature_coverage": 0.1434611891515616,
+        "face_text_coverage": 0.2694788420646186,
+        "identity_edge_alignment": 0.11050247351162835,
+        "identity_edge_recall": 0.17541220363461307,
+        "text_coverage_subject": 0.22991628622977328,
+        "microtext_to_lane_ratio": 6.410714285714286,
+        "anchor_visibility_score": 0.6811538176702497,
+        "anchor_feature_lane_ratio": 1.0,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.17857142857142858
+      }
+    },
+    {
+      "index": 30,
+      "candidate_id": 30,
+      "score": 118.289249,
+      "spec": {
+        "index": 30,
+        "lane_spacing_px": 29.651,
+        "anchor_font_scale": 1.466,
+        "filler_density": 1.106,
+        "min_lane_length_px": 100.139,
+        "feature_lane_boost": 1.248
+      },
+      "metrics": {
+        "lane_count": 60,
+        "face_feature_coverage": 0.1377672273614714,
+        "face_text_coverage": 0.3225871361058087,
+        "identity_edge_alignment": 0.0806868646994967,
+        "identity_edge_recall": 0.12299915754001685,
+        "text_coverage_subject": 0.25276544962168157,
+        "microtext_to_lane_ratio": 6.4,
+        "anchor_visibility_score": 0.7581481356658051,
+        "anchor_feature_lane_ratio": 0.6666666666666666,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.18333333333333332
+      }
+    },
+    {
+      "index": 31,
+      "candidate_id": 31,
+      "score": 127.528389,
+      "spec": {
+        "index": 31,
+        "lane_spacing_px": 28.365,
+        "anchor_font_scale": 1.739,
+        "filler_density": 0.943,
+        "min_lane_length_px": 77.265,
+        "feature_lane_boost": 1.124
+      },
+      "metrics": {
+        "lane_count": 61,
+        "face_feature_coverage": 0.15097428200066348,
+        "face_text_coverage": 0.3082353069137857,
+        "identity_edge_alignment": 0.10518353085263499,
+        "identity_edge_recall": 0.17571308220002407,
+        "text_coverage_subject": 0.25013681605214194,
+        "microtext_to_lane_ratio": 6.327868852459017,
+        "anchor_visibility_score": 0.7913797172194368,
+        "anchor_feature_lane_ratio": 0.7142857142857143,
+        "source_pixel_leakage": 0.0,
+        "background_cleanliness": 1.0,
+        "short_lane_ratio": 0.0,
+        "low_body_anchor_ratio": 0.0,
+        "word_repetition_ratio": 0.22950819672131148
+      }
+    }
+  ]
+}

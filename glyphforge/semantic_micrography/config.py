@@ -27,6 +27,8 @@ class MicrographyStyleConfig:
     lane_spacing_px: float = 24.0
     min_lane_length_px: float = 80.0
     max_lane_curvature: float = 0.18
+    filler_density: float = 1.0
+    feature_lane_boost: float = 1.0
     edge_stroke: bool = True
     anchor_lane_count: int = 8
     anchor_min_length_px: float = 220.0
@@ -35,6 +37,7 @@ class MicrographyStyleConfig:
     anchor_letter_spacing: float = 0.9
     anchor_opacity: float = 0.98
     anchor_regions: tuple[str, ...] = (
+        "feature_detail",
         "clothing_primary",
         "outline_or_edge",
         "skin_or_warm",
@@ -83,6 +86,13 @@ class MicrographyStyleConfig:
                 "opacity": 0.90,
                 "font_weight": 500,
             },
+            "feature_detail": {
+                "spacing_scale": 0.55,
+                "font_scale": 1.22,
+                "letter_spacing": 0.34,
+                "opacity": 0.98,
+                "font_weight": 720,
+            },
         }
     )
     region_palettes: dict[str, list[str]] = field(
@@ -94,6 +104,7 @@ class MicrographyStyleConfig:
             "clothing_secondary": ["#cfd6e8", "#9ea9bf", "#757f93"],
             "highlight": ["#fff5da", "#ffffff", "#e8e8e8"],
             "outline_or_edge": ["#ffffff", "#d0d6de", "#8c929a"],
+            "feature_detail": ["#ffffff", "#f1d7ac", "#ff5b35"],
         }
     )
 
@@ -111,6 +122,7 @@ class RenderConfig:
     style: str = "tribute_dark"
     write_debug_layers: bool = True
     rasterize_png: bool = True
+    strict_mask_quality: bool = False
 
 
 @dataclass(frozen=True)
